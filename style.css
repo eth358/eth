@@ -1,159 +1,135 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=JetBrains+Mono:wght@400;700&display=swap');
-
 :root {
-    --bg-overlay: rgba(0, 0, 0, 0.7);
-    --card-bg: rgba(15, 15, 15, 0.7);
-    --blur: 20px;
+  --bg-color: #050505;
+  --card-bg: rgba(0, 0, 0, 0.7);
+  --accent: #ffffff;
 }
 
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    cursor: none !important; /* Standart mouse'u HER YERDE yok et */
-    user-select: none;
-}
+* { margin: 0; padding: 0; box-sizing: border-box; cursor: none; user-select: none; }
 
 body {
-    background: #050505;
-    color: #fff;
-    font-family: 'Inter', sans-serif;
-    height: 100vh;
-    overflow: hidden;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  background-color: var(--bg-color);
+  color: white;
+  font-family: 'Inter', sans-serif;
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-/* --- KATMAN 1: ARKA PLANLAR (TIKLANAMAZ) --- */
-#background, #overlay, #noise, #canvas {
-    position: fixed;
-    inset: 0;
-    pointer-events: none !important; /* BURASI ÇOK ÖNEMLİ: Tıklamayı delip geçer */
+/* Arka Plan */
+#bg-media {
+  position: fixed;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  z-index: -3;
+  filter: brightness(0.4) blur(2px);
 }
 
-#background { z-index: -10; }
-#background video { width: 100%; height: 100%; object-fit: cover; }
-
-#overlay { background: var(--bg-overlay); z-index: -9; }
-
-#noise {
-    background: url('https://grainy-gradients.vercel.app/noise.svg');
-    opacity: 0.07;
-    z-index: -8;
+.overlay-scanlines {
+  position: fixed;
+  inset: 0;
+  background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.2) 50%), 
+              linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
+  background-size: 100% 3px, 3px 100%;
+  pointer-events: none;
+  z-index: -2;
 }
 
-#canvas { z-index: 1; /* Kartın arkasında, arkaplanın önünde */ }
+.overlay-vignette {
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(circle, transparent 30%, #000 110%);
+  z-index: -1;
+}
 
-/* --- KATMAN 2: GİRİŞ EKRANI (TIKLANABİLİR - EN ÜSTTE) --- */
+/* Giriş Ekranı */
 #enter-screen {
-    position: fixed;
-    inset: 0;
-    background: #000;
-    z-index: 99999; /* En üst katman */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer !important; /* Burada tıklama lazım */
+  position: fixed;
+  inset: 0;
+  background: #000;
+  z-index: 9999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: opacity 1s ease;
 }
 
-.enter-text {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 1.5rem;
-    color: #fff;
-    animation: pulse 1.5s infinite;
-    pointer-events: none; /* Yazıya değil div'e tıklanır */
-}
-@keyframes pulse { 0% { opacity: 0.4; } 50% { opacity: 1; } 100% { opacity: 0.4; } }
-
-/* --- KATMAN 3: ANA KART (TIKLANABİLİR) --- */
-#main-card {
-    position: relative;
-    z-index: 50; /* Efektlerin üstünde */
-    width: 380px;
-    background: var(--card-bg);
-    backdrop-filter: blur(var(--blur));
-    -webkit-backdrop-filter: blur(var(--blur));
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 16px;
-    padding: 40px 30px;
-    text-align: center;
-    opacity: 0;
-    transform: scale(0.95);
-    transition: all 0.6s cubic-bezier(0.22, 1, 0.36, 1);
-    box-shadow: 0 0 60px rgba(0,0,0,0.9);
+.click-text {
+  font-family: 'Courier Prime', monospace;
+  font-size: 16px;
+  animation: blink 1s infinite;
+  text-shadow: 0 0 10px #fff;
 }
 
-#main-card.visible {
-    opacity: 1;
-    transform: scale(1);
+/* Kart Tasarımı */
+.container {
+  opacity: 0;
+  transform: scale(0.9);
+  transition: all 1s ease;
 }
 
-/* Avatar & İsim */
-#avatar {
-    width: 110px; height: 110px;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 3px solid rgba(255,255,255,0.1);
-    margin-bottom: 15px;
-    box-shadow: 0 0 25px rgba(255,255,255,0.05);
+.container.visible { opacity: 1; transform: scale(1); }
+
+.profile-card {
+  width: 350px;
+  padding: 40px;
+  background: var(--card-bg);
+  backdrop-filter: blur(15px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  text-align: center;
+  box-shadow: 0 0 50px rgba(0,0,0,0.5);
 }
 
-h1 { font-size: 26px; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 5px; text-shadow: 0 0 15px rgba(255,255,255,0.3); }
-#typewriter { font-family: 'JetBrains Mono', monospace; font-size: 13px; color: rgba(255,255,255,0.5); margin-bottom: 30px; min-height: 18px; }
+.avatar-wrapper {
+  position: relative;
+  width: 100px;
+  height: 100px;
+  margin: 0 auto 20px;
+}
 
-/* Linkler (Kritik Bölge) */
-.links-grid { display: flex; flex-direction: column; gap: 12px; }
+#user-avatar {
+  width: 100%; height: 100%;
+  border-radius: 50%;
+  border: 2px solid white;
+}
+
+#username { font-size: 28px; margin-bottom: 10px; font-weight: 800; text-transform: uppercase; }
+
+.typewriter-container {
+  font-family: 'Courier Prime', monospace;
+  font-size: 13px;
+  color: rgba(255,255,255,0.6);
+  margin-bottom: 25px;
+}
+
+/* Linkler */
+.links-container { display: flex; flex-direction: column; gap: 10px; }
 
 .link-btn {
-    position: relative;
-    display: flex; align-items: center;
-    padding: 16px 20px;
-    background: rgba(255,255,255,0.03);
-    border: 1px solid rgba(255,255,255,0.06);
-    border-radius: 10px;
-    color: #fff;
-    text-decoration: none;
-    font-weight: 600;
-    font-size: 14px;
-    transition: all 0.2s ease;
-    z-index: 51; /* Kartın da üstünde */
-    cursor: none !important; /* Mouse efekti için */
+  display: flex; align-items: center; justify-content: center;
+  padding: 12px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 8px;
+  color: white;
+  text-decoration: none;
+  font-weight: 600;
+  transition: 0.3s;
 }
 
-.link-btn i { width: 25px; font-size: 18px; text-align: center; margin-right: 10px; transition: transform 0.2s; }
-
-/* Link Hover */
 .link-btn:hover {
-    background: rgba(255,255,255,0.1);
-    transform: translateY(-2px);
-    border-color: rgba(255,255,255,0.4);
-    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-}
-.link-btn:hover i { transform: scale(1.2); }
-
-/* --- KATMAN 4: CUSTOM CURSOR (HAYALET MODU) --- */
-#cursor {
-    position: fixed;
-    top: 0; left: 0;
-    width: 18px; height: 18px;
-    border: 2px solid rgba(255,255,255,0.9);
-    border-radius: 50%;
-    transform: translate(-50%, -50%);
-    pointer-events: none !important; /* BU KOD OLMADAN TIKLAYAMAZSIN */
-    z-index: 100000; /* Her şeyin en üstünde ama hayalet */
-    mix-blend-mode: difference; /* Renklerin tersi */
-    transition: width 0.2s, height 0.2s, background-color 0.2s;
+  background: white;
+  color: black;
 }
 
-/* Link üzerine gelince cursor değişimi */
-body.hovering #cursor {
-    width: 40px; height: 40px;
-    background: rgba(255,255,255,0.2);
-    border-color: transparent;
-    backdrop-filter: invert(1);
-}
+.link-btn i { margin-right: 10px; }
 
-.footer-controls { margin-top: 25px; color: #444; font-size: 12px; display: flex; justify-content: space-between; align-items: center; }
-.footer-controls i { cursor: none !important; padding: 5px; }
-.footer-controls i:hover { color: #fff; }
+/* Cursor */
+#cursor-dot, #cursor-circle { position: fixed; pointer-events: none; z-index: 10000; border-radius: 50%; transform: translate(-50%, -50%); }
+#cursor-dot { width: 4px; height: 4px; background: white; }
+#cursor-circle { width: 30px; height: 30px; border: 1px solid rgba(255,255,255,0.5); transition: 0.1s; }
+
+@keyframes blink { 50% { opacity: 0; } }
