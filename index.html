@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>@Etherac</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <div id="bg-media"></div>
+  <div class="overlay-scanlines"></div>
+  <div class="overlay-vignette"></div>
+
+  <audio id="bg-audio" loop></audio>
+
+  <div id="enter-screen">
+    <div class="enter-content">
+      <p class="click-text">[ click to enter ]</p>
+    </div>
+  </div>
+
+  <main class="container hidden" id="main-container">
+    <div class="profile-card">
+      <div class="avatar-wrapper">
+        <img src="" alt="Avatar" id="user-avatar">
+        <div class="rank-badge"><i class="fa-solid fa-crown"></i></div>
+      </div>
+
+      <h1 id="username" class="glitch" data-text=""></h1>
+      
+      <div class="typewriter-container">
+        <span id="typewriter"></span><span class="cursor">|</span>
+      </div>
+
+      <div class="links-container" id="links-box">
+        </div>
+      
+      <div class="volume-control">
+        <i class="fa-solid fa-volume-high" id="mute-btn"></i>
+      </div>
+      
+      <div class="footer">ETHERAC SYSTEM v2.0</div>
+    </div>
+  </main>
+
+  <div id="cursor-dot"></div>
+  <div id="cursor-circle"></div>
+
+  <script src="script.js"></script>
+</body>
+</html>
