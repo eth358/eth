@@ -1,22 +1,21 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=JetBrains+Mono:wght@400;700&display=swap');
 
 :root {
-    --bg-overlay: rgba(0, 0, 0, 0.75);
-    --card-bg: rgba(20, 20, 20, 0.6);
-    --blur: 15px;
-    --accent: #ffffff;
+    --bg-overlay: rgba(0, 0, 0, 0.7);
+    --card-bg: rgba(15, 15, 15, 0.7);
+    --blur: 20px;
 }
 
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    cursor: none; /* Standart mouse gizli */
+    cursor: none !important; /* Standart mouse'u HER YERDE yok et */
     user-select: none;
 }
 
 body {
-    background: #000;
+    background: #050505;
     color: #fff;
     font-family: 'Inter', sans-serif;
     height: 100vh;
@@ -26,149 +25,128 @@ body {
     align-items: center;
 }
 
-/* --- ARKA PLAN VE EFEKTLER --- */
-#background {
+/* --- KATMAN 1: ARKA PLANLAR (TIKLANAMAZ) --- */
+#background, #overlay, #noise, #canvas {
     position: fixed;
     inset: 0;
-    background-size: cover;
-    background-position: center;
-    z-index: -3;
-}
-#background video {
-    width: 100%; height: 100%; object-fit: cover;
+    pointer-events: none !important; /* BURASI ÇOK ÖNEMLİ: Tıklamayı delip geçer */
 }
 
-#overlay {
-    position: fixed;
-    inset: 0;
-    background: var(--bg-overlay);
-    z-index: -2;
-}
+#background { z-index: -10; }
+#background video { width: 100%; height: 100%; object-fit: cover; }
+
+#overlay { background: var(--bg-overlay); z-index: -9; }
 
 #noise {
-    position: fixed;
-    inset: 0;
-    opacity: 0.05;
     background: url('https://grainy-gradients.vercel.app/noise.svg');
-    z-index: -1;
-    pointer-events: none;
+    opacity: 0.07;
+    z-index: -8;
 }
 
-/* --- GİRİŞ EKRANI --- */
+#canvas { z-index: 1; /* Kartın arkasında, arkaplanın önünde */ }
+
+/* --- KATMAN 2: GİRİŞ EKRANI (TIKLANABİLİR - EN ÜSTTE) --- */
 #enter-screen {
     position: fixed;
     inset: 0;
     background: #000;
-    z-index: 9999;
+    z-index: 99999; /* En üst katman */
     display: flex;
     justify-content: center;
     align-items: center;
-    cursor: pointer;
+    cursor: pointer !important; /* Burada tıklama lazım */
 }
 
 .enter-text {
     font-family: 'JetBrains Mono', monospace;
-    font-size: 1.2rem;
-    animation: blink 1s infinite;
+    font-size: 1.5rem;
+    color: #fff;
+    animation: pulse 1.5s infinite;
+    pointer-events: none; /* Yazıya değil div'e tıklanır */
 }
+@keyframes pulse { 0% { opacity: 0.4; } 50% { opacity: 1; } 100% { opacity: 0.4; } }
 
-@keyframes blink { 50% { opacity: 0.3; } }
-
-/* --- ANA KART --- */
+/* --- KATMAN 3: ANA KART (TIKLANABİLİR) --- */
 #main-card {
-    width: 400px;
+    position: relative;
+    z-index: 50; /* Efektlerin üstünde */
+    width: 380px;
     background: var(--card-bg);
     backdrop-filter: blur(var(--blur));
     -webkit-backdrop-filter: blur(var(--blur));
-    border: 1px solid rgba(255,255,255,0.1);
-    border-radius: 20px;
-    padding: 40px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    padding: 40px 30px;
     text-align: center;
-    position: relative;
-    z-index: 10;
     opacity: 0;
-    transform: scale(0.9);
-    transition: opacity 0.8s ease, transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    box-shadow: 0 0 50px rgba(0,0,0,0.8);
+    transform: scale(0.95);
+    transition: all 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+    box-shadow: 0 0 60px rgba(0,0,0,0.9);
 }
 
-/* Kart Süzülme Animasyonu */
 #main-card.visible {
     opacity: 1;
     transform: scale(1);
-    animation: float 6s ease-in-out infinite;
 }
 
-@keyframes float {
-    0% { transform: translateY(0px); }
-    50% { transform: translateY(-15px); }
-    100% { transform: translateY(0px); }
-}
-
-/* Avatar & Badges */
-.profile-header { position: relative; width: 120px; margin: 0 auto 15px; }
+/* Avatar & İsim */
 #avatar {
-    width: 120px; height: 120px;
+    width: 110px; height: 110px;
     border-radius: 50%;
     object-fit: cover;
-    border: 2px solid rgba(255,255,255,0.2);
-    box-shadow: 0 0 20px rgba(255,255,255,0.1);
+    border: 3px solid rgba(255,255,255,0.1);
+    margin-bottom: 15px;
+    box-shadow: 0 0 25px rgba(255,255,255,0.05);
 }
-.badges {
-    position: absolute; bottom: 0; right: 0;
-    background: rgba(0,0,0,0.8);
-    border-radius: 12px; padding: 4px;
-    display: flex; gap: 4px;
-}
-.badge { font-size: 14px; padding: 2px; color: #gold; }
 
-/* İsim & Yazı */
-h1 { font-size: 2rem; font-weight: 800; margin-bottom: 5px; text-shadow: 0 0 10px rgba(255,255,255,0.5); }
-#typewriter { font-family: 'JetBrains Mono', monospace; font-size: 0.9rem; color: rgba(255,255,255,0.7); margin-bottom: 25px; min-height: 1.2em; }
+h1 { font-size: 26px; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 5px; text-shadow: 0 0 15px rgba(255,255,255,0.3); }
+#typewriter { font-family: 'JetBrains Mono', monospace; font-size: 13px; color: rgba(255,255,255,0.5); margin-bottom: 30px; min-height: 18px; }
 
-/* Linkler */
+/* Linkler (Kritik Bölge) */
 .links-grid { display: flex; flex-direction: column; gap: 12px; }
+
 .link-btn {
-    display: flex; align-items: center; justify-content: center; gap: 10px;
-    padding: 12px;
-    background: rgba(255,255,255,0.05);
-    border: 1px solid rgba(255,255,255,0.05);
+    position: relative;
+    display: flex; align-items: center;
+    padding: 16px 20px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.06);
     border-radius: 10px;
-    color: #fff; text-decoration: none;
+    color: #fff;
+    text-decoration: none;
     font-weight: 600;
-    transition: all 0.3s;
-    position: relative; overflow: hidden;
+    font-size: 14px;
+    transition: all 0.2s ease;
+    z-index: 51; /* Kartın da üstünde */
+    cursor: none !important; /* Mouse efekti için */
 }
 
-/* Link Glow Efekti */
+.link-btn i { width: 25px; font-size: 18px; text-align: center; margin-right: 10px; transition: transform 0.2s; }
+
+/* Link Hover */
 .link-btn:hover {
-    background: rgba(255,255,255,0.15);
-    transform: scale(1.02);
-    border-color: rgba(255,255,255,0.5);
-    box-shadow: 0 0 15px rgba(255,255,255,0.2);
+    background: rgba(255,255,255,0.1);
+    transform: translateY(-2px);
+    border-color: rgba(255,255,255,0.4);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
 }
+.link-btn:hover i { transform: scale(1.2); }
 
-/* Footer */
-.footer-controls {
-    margin-top: 25px; display: flex; justify-content: space-between; align-items: center; color: rgba(255,255,255,0.4); font-size: 0.8rem;
-}
-.footer-controls i { cursor: pointer; transition: 0.3s; }
-.footer-controls i:hover { color: #fff; }
-
-/* --- CUSTOM CURSOR (ÖNEMLİ: pointer-events: none) --- */
+/* --- KATMAN 4: CUSTOM CURSOR (HAYALET MODU) --- */
 #cursor {
     position: fixed;
     top: 0; left: 0;
-    width: 20px; height: 20px;
-    border: 1px solid rgba(255,255,255,0.8);
+    width: 18px; height: 18px;
+    border: 2px solid rgba(255,255,255,0.9);
     border-radius: 50%;
     transform: translate(-50%, -50%);
-    pointer-events: none; /* BU SATIR TIKLAMA SORUNUNU ÇÖZER */
-    z-index: 10000;
-    transition: width 0.2s, height 0.2s, background 0.2s;
-    mix-blend-mode: difference;
+    pointer-events: none !important; /* BU KOD OLMADAN TIKLAYAMAZSIN */
+    z-index: 100000; /* Her şeyin en üstünde ama hayalet */
+    mix-blend-mode: difference; /* Renklerin tersi */
+    transition: width 0.2s, height 0.2s, background-color 0.2s;
 }
 
+/* Link üzerine gelince cursor değişimi */
 body.hovering #cursor {
     width: 40px; height: 40px;
     background: rgba(255,255,255,0.2);
@@ -176,5 +154,6 @@ body.hovering #cursor {
     backdrop-filter: invert(1);
 }
 
-/* Canvas Arkası Kar Efekti */
-#canvas { position: fixed; inset: 0; pointer-events: none; z-index: 1; }
+.footer-controls { margin-top: 25px; color: #444; font-size: 12px; display: flex; justify-content: space-between; align-items: center; }
+.footer-controls i { cursor: none !important; padding: 5px; }
+.footer-controls i:hover { color: #fff; }
