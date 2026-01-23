@@ -1,81 +1,102 @@
-const config = {
-    username: "Etherac",
-    avatar: "https://ui-avatars.com/api/?name=Etherac&background=000&color=fff&size=256",
-    background: "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExM3R4eGZqY3V4eGZqY3V4eGZqY3V4eGZqY3V4eGZqY3V4eGZqY3V4eCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/U3qYN8S0j3bpK/giphy.gif",
-    audio: "https://cdn.pixabay.com/download/audio/2022/11/22/audio_febc508520.mp3",
-    volume: 0.3,
-    texts: ["Producer & Visuals", "Hoodtrap / Arabesk", "Welcome to my world", "Etherac on Top"],
-    socials: [
-        { name: "Spotify", url: "https://open.spotify.com/user/31vd2swzox2pn6t4jz7kll3r4e4i", icon: "fa-brands fa-spotify" },
-        { name: "SoundCloud", url: "https://soundcloud.com/etherac", icon: "fa-brands fa-soundcloud" },
-        { name: "YouTube", url: "https://www.youtube.com/@etherac05", icon: "fa-brands fa-youtube" },
-        { name: "Discord", url: "#", icon: "fa-brands fa-discord" }
-    ]
+// Database Simulation
+const DEFAULT_ADMIN = { user: "root", pass: "eth" };
+let inviteCodes = JSON.parse(localStorage.getItem('invites')) || ["ETH-777"];
+let users = JSON.parse(localStorage.getItem('users')) || [DEFAULT_ADMIN];
+
+// Initialize Weather (Rain)
+const canvas = document.getElementById('weather-canvas');
+const ctx = canvas.getContext('2d');
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+let drops = [];
+for(let i = 0; i < 100; i++) {
+    drops.push({ x: Math.random()*canvas.width, y: Math.random()*canvas.height, l: Math.random()*20, v: Math.random()*5+5 });
+}
+
+function drawRain() {
+    ctx.clearRect(0,0, canvas.width, canvas.height);
+    ctx.strokeStyle = 'rgba(255,255,255,0.15)';
+    ctx.lineWidth = 1;
+    drops.forEach(d => {
+        ctx.beginPath(); ctx.moveTo(d.x, d.y); ctx.lineTo(d.x, d.y + d.l); ctx.stroke();
+        d.y += d.v; if(d.y > canvas.height) d.y = -20;
+    });
+    requestAnimationFrame(drawRain);
+}
+drawRain();
+
+// App Flow
+const audio = document.getElementById('bg-audio');
+
+document.getElementById('entrance-layer').onclick = function() {
+    this.classList.add('hidden');
+    document.getElementById('auth-layer').classList.remove('hidden');
+    audio.play();
+    audio.volume = 0.5;
 };
 
-document.addEventListener("DOMContentLoaded", () => {
-    // Verileri Yükle
-    document.getElementById("user-avatar").src = config.avatar;
-    document.getElementById("username").innerText = config.username;
-    document.getElementById("username").setAttribute("data-text", config.username);
-    document.getElementById("bg-media").style.backgroundImage = `url('${config.background}')`;
-    
-    const audio = document.getElementById("bg-audio");
-    audio.src = config.audio;
-    audio.volume = config.volume;
+function toggleAuth(type) {
+    document.getElementById('login-form').classList.toggle('hidden', type === 'reg');
+    document.getElementById('register-form').classList.toggle('hidden', type === 'login');
+    document.getElementById('auth-title').innerText = type === 'reg' ? "REGISTRATION" : "SYSTEM ACCESS";
+}
 
-    const linksBox = document.getElementById("links-box");
-    config.socials.forEach(s => {
-        const a = document.createElement("a");
-        a.href = s.url;
-        a.className = "link-btn";
-        a.target = "_blank";
-        a.innerHTML = `<i class="${s.icon}"></i> ${s.name}`;
-        linksBox.appendChild(a);
-    });
+function handleLogin() {
+    const u = document.getElementById('user-input').value;
+    const p = document.getElementById('pass-input').value;
+    const found = users.find(user => user.user === u && user.pass === p);
 
-    // Giriş Ekranı Mantığı
-    const enterScreen = document.getElementById("enter-screen");
-    enterScreen.addEventListener("click", () => {
-        enterScreen.style.opacity = "0";
-        setTimeout(() => {
-            enterScreen.style.display = "none";
-            document.getElementById("main-container").classList.add("visible");
-            audio.play();
-        }, 1000);
-    });
-
-    // Typewriter Efekti
-    let textIdx = 0;
-    let charIdx = 0;
-    let isDeleting = false;
-    const typeEl = document.getElementById("typewriter");
-
-    function type() {
-        const currentText = config.texts[textIdx];
-        if (isDeleting) {
-            typeEl.textContent = currentText.substring(0, charIdx - 1);
-            charIdx--;
-        } else {
-            typeEl.textContent = currentText.substring(0, charIdx + 1);
-            charIdx++;
-        }
-
-        if (!isDeleting && charIdx === currentText.length) {
-            setTimeout(() => isDeleting = true, 2000);
-        } else if (isDeleting && charIdx === 0) {
-            isDeleting = false;
-            textIdx = (textIdx + 1) % config.texts.length;
-        }
-        setTimeout(type, isDeleting ? 50 : 100);
+    if(found) {
+        enterApp(found);
+    } else {
+        alert("ACCESS DENIED");
     }
-    type();
+}
 
-    // Custom Cursor
-    const dot = document.getElementById("cursor-dot");
-    const circle = document.getElementById("cursor-circle");
-    document.addEventListener("mousemove", (e) => {
-        dot.style.left = circle.style.left = e.clientX + "px";
-        dot.style.top = circle.style.top = e.clientY + "px";
-    });
-});
+function handleRegister() {
+    const inv = document.getElementById('reg-invite').value;
+    const u = document.getElementById('reg-user').value;
+    const p = document.getElementById('reg-pass').value;
+
+    if(users.length >= 2) return alert("System capacity reached (Max 2 users).");
+    if(!inviteCodes.includes(inv)) return alert("Invalid Invite Code.");
+
+    const newUser = { user: u, pass: p };
+    users.push(newUser);
+    localStorage.setItem('users', JSON.stringify(users));
+    
+    // Remove invite after use
+    inviteCodes = inviteCodes.filter(c => c !== inv);
+    localStorage.setItem('invites', JSON.stringify(inviteCodes));
+
+    alert("Registration successful. Please login.");
+    toggleAuth('login');
+}
+
+function enterApp(user) {
+    document.getElementById('auth-layer').classList.add('hidden');
+    document.getElementById('main-ui').classList.remove('hidden');
+    document.getElementById('display-name').innerText = user.user.toUpperCase();
+    
+    if(user.user === 'root') {
+        document.getElementById('admin-panel').classList.remove('hidden');
+        renderInvites();
+    }
+}
+
+function generateInvite() {
+    const code = "ETH-" + Math.floor(Math.random()*9999);
+    inviteCodes.push(code);
+    localStorage.setItem('invites', JSON.stringify(inviteCodes));
+    renderInvites();
+}
+
+function renderInvites() {
+    const list = document.getElementById('invite-list');
+    list.innerHTML = inviteCodes.map(c => `<li>${c}</li>`).join('');
+}
+
+function logout() { location.reload(); }
+
+document.getElementById('volume-ctrl').oninput = (e) => audio.volume = e.target.value;
