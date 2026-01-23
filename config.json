@@ -1,7 +1,7 @@
 const config = {
     // === ANA AYARLAR ===
-    pageTitle: "@Etherac", // Sekme adı
-    username: "Etherac",   // Karttaki isim
+    pageTitle: "@eth", // Sekme adı
+    username: "etherac",   // Karttaki isim
     
     // Profil Fotoğrafı (Link veya dosya yolu)
     avatarUrl: "https://ui-avatars.com/api/?name=Etherac&background=000&color=fff&size=256",
@@ -15,9 +15,9 @@ const config = {
 
     // === YAZI EFEKTİ (Typewriter) ===
     description: [
-        "Producer & Visuals",
+        "Producer",
         "Welcome to my reality.",
-        "Etherac on top."
+        "eth on top."
     ],
 
     // === ROZETLER (İsmin yanındaki ikonlar) ===
@@ -47,8 +47,9 @@ const config = {
         },
         { 
             name: "Discord", 
-            url: "https://discord.gg/seninlinkin", 
+            url: "https://discord.gg/358", 
             icon: "fa-brands fa-discord" 
         }
     ]
 };
+
