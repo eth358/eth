@@ -1,55 +1,11 @@
-const config = {
-    // === ANA AYARLAR ===
-    pageTitle: "@eth", // Sekme adı
-    username: "etherac",   // Karttaki isim
-    
-    // Profil Fotoğrafı (Link veya dosya yolu)
-    avatarUrl: "https://ui-avatars.com/api/?name=Etherac&background=000&color=fff&size=256",
-    
-    // Arka Plan (Resim Linki veya .mp4 Video Linki)
-    backgroundUrl: "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExM3R4eGZqY3V4eGZqY3V4eGZqY3V4eGZqY3V4eGZqY3V4eGZqY3V4eCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/U3qYN8S0j3bpK/giphy.gif",
-    
-    // Şarkı Linki (.mp3 olmak zorunda)
-    musicUrl: "https://cdn.pixabay.com/download/audio/2022/11/22/audio_febc508520.mp3",
-    musicVolume: 0.3, // 0.0 ile 1.0 arası
-
-    // === YAZI EFEKTİ (Typewriter) ===
-    description: [
-        "Producer",
-        "Welcome to my reality.",
-        "eth on top."
-    ],
-
-    // === ROZETLER (İsmin yanındaki ikonlar) ===
-    badges: [
-        { icon: "fa-solid fa-crown", tooltip: "Owner" },
-        { icon: "fa-solid fa-check-circle", tooltip: "Verified" },
-        { icon: "fa-solid fa-code", tooltip: "Developer" }
-    ],
-
-    // === LİNKLER ===
-    // İkon kodları için: fontawesome.com
-    links: [
-        { 
-            name: "Spotify", 
-            url: "https://open.spotify.com/user/31vd2swzox2pn6t4jz7kll3r4e4i?si=85a7470012134c9f", 
-            icon: "fa-brands fa-spotify" 
-        },
-        { 
-            name: "SoundCloud", 
-            url: "https://soundcloud.com/etherac", 
-            icon: "fa-brands fa-soundcloud" 
-        },
-        { 
-            name: "YouTube", 
-            url: "https://www.youtube.com/@etherac05", 
-            icon: "fa-brands fa-youtube" 
-        },
-        { 
-            name: "Discord", 
-            url: "https://discord.gg/358", 
-            icon: "fa-brands fa-discord" 
-        }
-    ]
+const CONFIG = {
+    siteName: "ETHERAC SYSTEM",
+    maxUsers: 2,
+    startingInvites: ["ETH-999"],
+    defaultMusic: "https://files.catbox.moe/0v9x3m.mp3", // Amy Winehouse
+    admin: {
+        user: "root",
+        pass: "eth",
+        role: "SYSTEM ADMIN"
+    }
 };
-
