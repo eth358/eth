@@ -2,75 +2,76 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Etherac | Secure System</title>
+    <title>Etherac | Secure</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
     <canvas id="weather-canvas"></canvas>
-    <div class="scanlines"></div>
-
-    <!-- 1. Entrance Screen -->
-    <div id="entrance-layer" class="overlay">
-        <div class="glitch-title" data-text="ETHERAC">ETHERAC</div>
-        <p class="click-start">[ CLICK TO INITIALIZE ]</p>
+    
+    <!-- Entrance -->
+    <div id="entrance" class="overlay">
+        <h1 class="glitch">ETHERAC</h1>
+        <p>[ CLICK TO BOOT ]</p>
     </div>
 
-    <!-- 2. Auth System (Login/Register) -->
-    <div id="auth-layer" class="overlay hidden">
+    <!-- Auth -->
+    <div id="auth-ui" class="overlay hidden">
         <div class="auth-card">
-            <h2 id="auth-title">SYSTEM ACCESS</h2>
-            <div id="login-form">
-                <input type="text" id="user-input" placeholder="USERNAME">
-                <input type="password" id="pass-input" placeholder="PASSWORD">
-                <button onclick="handleLogin()">LOGIN</button>
-                <p class="toggle-link" onclick="toggleAuth('reg')">Need access? Enter Invite</p>
+            <h2 id="auth-title">LOGIN</h2>
+            <div id="login-box">
+                <input type="text" id="l-user" placeholder="USERNAME">
+                <input type="password" id="l-pass" placeholder="PASSWORD">
+                <button onclick="auth.login()">ACCESS</button>
+                <p onclick="ui.toggleAuth('reg')">Register with Invite</p>
             </div>
-            <div id="register-form" class="hidden">
-                <input type="text" id="reg-invite" placeholder="INVITE CODE">
-                <input type="text" id="reg-user" placeholder="NEW USERNAME">
-                <input type="password" id="reg-pass" placeholder="NEW PASSWORD">
-                <button onclick="handleRegister()">REGISTER</button>
-                <p class="toggle-link" onclick="toggleAuth('login')">Back to Login</p>
+            <div id="reg-box" class="hidden">
+                <input type="text" id="r-inv" placeholder="INVITE CODE">
+                <input type="text" id="r-user" placeholder="USERNAME">
+                <input type="password" id="r-pass" placeholder="PASSWORD">
+                <button onclick="auth.register()">CREATE ACCOUNT</button>
+                <p onclick="ui.toggleAuth('login')">Back to Login</p>
             </div>
         </div>
     </div>
 
-    <!-- 3. Main Profile UI -->
-    <main id="main-ui" class="hidden">
-        <div class="profile-container">
-            <div class="glass-card main-bio">
-                <div class="avatar-wrapper">
-                    <img src="https://ui-avatars.com/api/?name=Etherac&background=000&color=fff" id="display-avatar">
+    <!-- Main App -->
+    <main id="app" class="hidden">
+        <div class="main-layout">
+            <!-- Profile Card -->
+            <div class="glass-card" id="profile-card">
+                <div class="profile-header">
+                    <img id="p-img" src="https://ui-avatars.com/api/?name=Etherac">
+                    <h1 id="p-name">USER</h1>
+                    <p id="p-role">MEMBER</p>
                 </div>
-                <h1 id="display-name">USER</h1>
-                <p id="display-role">AUTHORIZED USER</p>
-                <div class="social-links">
-                    <a href="#"><i class="fa-brands fa-spotify"></i></a>
-                    <a href="#"><i class="fa-brands fa-discord"></i></a>
-                    <a href="#"><i class="fa-brands fa-github"></i></a>
+                
+                <div class="profile-editor hidden" id="editor">
+                    <input type="text" id="edit-img" placeholder="AVATAR URL">
+                    <input type="text" id="edit-role" placeholder="CUSTOM ROLE">
+                    <button onclick="profile.save()">SAVE CHANGES</button>
                 </div>
-                <div class="music-mini-player">
-                    <p><i class="fa-solid fa-music"></i> <span id="track-name">Amy Winehouse - You Know I'm No Good</span></p>
-                    <input type="range" id="volume-ctrl" min="0" max="1" step="0.1" value="0.5">
+
+                <div class="controls">
+                    <button onclick="ui.toggleEditor()">CUSTOMIZE PROFILE</button>
+                    <button onclick="auth.logout()" class="red">DISCONNECT</button>
                 </div>
-                <button onclick="logout()" class="logout-btn">DISCONNECT</button>
             </div>
 
-            <!-- Admin Panel (Visible only to root) -->
-            <div id="admin-panel" class="glass-card admin-box hidden">
-                <h3>ADMIN DASHBOARD</h3>
-                <div class="admin-tools">
-                    <p>Invite Codes Active:</p>
+            <!-- Admin Card -->
+            <div class="glass-card admin-only hidden" id="admin-card">
+                <h3>ADMIN PANEL</h3>
+                <div id="invite-area">
+                    <p>ACTIVE INVITES:</p>
                     <ul id="invite-list"></ul>
-                    <button onclick="generateInvite()">GENERATE INVITE</button>
+                    <button onclick="auth.genInvite()">GENERATE NEW CODE</button>
                 </div>
             </div>
         </div>
     </main>
 
-    <audio id="bg-audio" src="https://files.catbox.moe/0v9x3m.mp3" loop></audio>
+    <audio id="bg-music" loop></audio>
+    <script src="config.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
