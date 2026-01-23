@@ -1,60 +1,76 @@
 <!DOCTYPE html>
-<html lang="tr">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@Etherac | Bio</title>
+    <title>Etherac | Secure System</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
 </head>
 <body>
+    <canvas id="weather-canvas"></canvas>
+    <div class="scanlines"></div>
 
-    <!-- Arka Plan Görseli/GIF -->
-    <div id="bg-media"></div>
-    <div class="overlay-scanlines"></div>
-    <div class="overlay-vignette"></div>
+    <!-- 1. Entrance Screen -->
+    <div id="entrance-layer" class="overlay">
+        <div class="glitch-title" data-text="ETHERAC">ETHERAC</div>
+        <p class="click-start">[ CLICK TO INITIALIZE ]</p>
+    </div>
 
-    <!-- Müzik -->
-    <audio id="bg-audio" loop></audio>
-
-    <!-- Giriş Ekranı -->
-    <div id="enter-screen">
-        <div class="enter-content">
-            <p class="click-text">[ GİRİŞ YAPMAK İÇİN TIKLA ]</p>
+    <!-- 2. Auth System (Login/Register) -->
+    <div id="auth-layer" class="overlay hidden">
+        <div class="auth-card">
+            <h2 id="auth-title">SYSTEM ACCESS</h2>
+            <div id="login-form">
+                <input type="text" id="user-input" placeholder="USERNAME">
+                <input type="password" id="pass-input" placeholder="PASSWORD">
+                <button onclick="handleLogin()">LOGIN</button>
+                <p class="toggle-link" onclick="toggleAuth('reg')">Need access? Enter Invite</p>
+            </div>
+            <div id="register-form" class="hidden">
+                <input type="text" id="reg-invite" placeholder="INVITE CODE">
+                <input type="text" id="reg-user" placeholder="NEW USERNAME">
+                <input type="password" id="reg-pass" placeholder="NEW PASSWORD">
+                <button onclick="handleRegister()">REGISTER</button>
+                <p class="toggle-link" onclick="toggleAuth('login')">Back to Login</p>
+            </div>
         </div>
     </div>
 
-    <!-- Ana Kart -->
-    <main class="container" id="main-container">
-        <div class="profile-card">
-            <div class="avatar-wrapper">
-                <img src="" alt="Avatar" id="user-avatar">
-                <div class="rank-badge"><i class="fa-solid fa-crown"></i></div>
+    <!-- 3. Main Profile UI -->
+    <main id="main-ui" class="hidden">
+        <div class="profile-container">
+            <div class="glass-card main-bio">
+                <div class="avatar-wrapper">
+                    <img src="https://ui-avatars.com/api/?name=Etherac&background=000&color=fff" id="display-avatar">
+                </div>
+                <h1 id="display-name">USER</h1>
+                <p id="display-role">AUTHORIZED USER</p>
+                <div class="social-links">
+                    <a href="#"><i class="fa-brands fa-spotify"></i></a>
+                    <a href="#"><i class="fa-brands fa-discord"></i></a>
+                    <a href="#"><i class="fa-brands fa-github"></i></a>
+                </div>
+                <div class="music-mini-player">
+                    <p><i class="fa-solid fa-music"></i> <span id="track-name">Amy Winehouse - You Know I'm No Good</span></p>
+                    <input type="range" id="volume-ctrl" min="0" max="1" step="0.1" value="0.5">
+                </div>
+                <button onclick="logout()" class="logout-btn">DISCONNECT</button>
             </div>
 
-            <h1 id="username" class="glitch" data-text=""></h1>
-            
-            <div class="typewriter-container">
-                <span id="typewriter"></span><span class="cursor">|</span>
+            <!-- Admin Panel (Visible only to root) -->
+            <div id="admin-panel" class="glass-card admin-box hidden">
+                <h3>ADMIN DASHBOARD</h3>
+                <div class="admin-tools">
+                    <p>Invite Codes Active:</p>
+                    <ul id="invite-list"></ul>
+                    <button onclick="generateInvite()">GENERATE INVITE</button>
+                </div>
             </div>
-
-            <div class="links-container" id="links-box">
-                <!-- Linkler JS ile buraya gelecek -->
-            </div>
-            
-            <div class="volume-control">
-                <i class="fa-solid fa-volume-high" id="mute-btn"></i>
-            </div>
-            
-            <div class="footer">ETHERAC SYSTEM v2.0</div>
         </div>
     </main>
 
-    <!-- Özel İmleç -->
-    <div id="cursor-dot"></div>
-    <div id="cursor-circle"></div>
-
+    <audio id="bg-audio" src="https://files.catbox.moe/0v9x3m.mp3" loop></audio>
     <script src="script.js"></script>
 </body>
 </html>
