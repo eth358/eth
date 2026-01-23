@@ -1,19 +1,54 @@
-{
-  "username": "Etherac",
-  "avatar": "https://ui-avatars.com/api/?name=Etherac&background=000&color=fff&size=256",
-  "background_image": "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExM3R4eGZqY3V4eGZqY3V4eGZqY3V4eGZqY3V4eGZqY3V4eGZqY3V4eCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/U3qYN8S0j3bpK/giphy.gif",
-  "audio_url": "https://cdn.pixabay.com/download/audio/2022/11/22/audio_febc508520.mp3",
-  "volume": 0.3,
-  "typewriter_text": [
-    "Producer & Visuals",
-    "Hoodtrap / Arabesk",
-    "Welcome to my world",
-    "Etherac on Top"
-  ],
-  "socials": [
-    { "name": "Spotify", "url": "https://open.spotify.com/user/31vd2swzox2pn6t4jz7kll3r4e4i?si=85a7470012134c9f", "icon": "fa-spotify", "color": "#1DB954" },
-    { "name": "SoundCloud", "url": "https://soundcloud.com/etherac", "icon": "fa-soundcloud", "color": "#FF5500" },
-    { "name": "YouTube", "url": "https://www.youtube.com/@etherac05", "icon": "fa-youtube", "color": "#FF0000" },
-    { "name": "Discord", "url": "#", "icon": "fa-discord", "color": "#5865F2" }
-  ]
-}
+const config = {
+    // === ANA AYARLAR ===
+    pageTitle: "@Etherac", // Sekme adı
+    username: "Etherac",   // Karttaki isim
+    
+    // Profil Fotoğrafı (Link veya dosya yolu)
+    avatarUrl: "https://ui-avatars.com/api/?name=Etherac&background=000&color=fff&size=256",
+    
+    // Arka Plan (Resim Linki veya .mp4 Video Linki)
+    backgroundUrl: "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExM3R4eGZqY3V4eGZqY3V4eGZqY3V4eGZqY3V4eGZqY3V4eGZqY3V4eCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/U3qYN8S0j3bpK/giphy.gif",
+    
+    // Şarkı Linki (.mp3 olmak zorunda)
+    musicUrl: "https://cdn.pixabay.com/download/audio/2022/11/22/audio_febc508520.mp3",
+    musicVolume: 0.3, // 0.0 ile 1.0 arası
+
+    // === YAZI EFEKTİ (Typewriter) ===
+    description: [
+        "Producer & Visuals",
+        "Welcome to my reality.",
+        "Etherac on top."
+    ],
+
+    // === ROZETLER (İsmin yanındaki ikonlar) ===
+    badges: [
+        { icon: "fa-solid fa-crown", tooltip: "Owner" },
+        { icon: "fa-solid fa-check-circle", tooltip: "Verified" },
+        { icon: "fa-solid fa-code", tooltip: "Developer" }
+    ],
+
+    // === LİNKLER ===
+    // İkon kodları için: fontawesome.com
+    links: [
+        { 
+            name: "Spotify", 
+            url: "https://open.spotify.com/user/31vd2swzox2pn6t4jz7kll3r4e4i?si=85a7470012134c9f", 
+            icon: "fa-brands fa-spotify" 
+        },
+        { 
+            name: "SoundCloud", 
+            url: "https://soundcloud.com/etherac", 
+            icon: "fa-brands fa-soundcloud" 
+        },
+        { 
+            name: "YouTube", 
+            url: "https://www.youtube.com/@etherac05", 
+            icon: "fa-brands fa-youtube" 
+        },
+        { 
+            name: "Discord", 
+            url: "https://discord.gg/seninlinkin", 
+            icon: "fa-brands fa-discord" 
+        }
+    ]
+};
