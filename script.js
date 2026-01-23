@@ -1,102 +1,107 @@
-// Database Simulation
-const DEFAULT_ADMIN = { user: "root", pass: "eth" };
-let inviteCodes = JSON.parse(localStorage.getItem('invites')) || ["ETH-777"];
-let users = JSON.parse(localStorage.getItem('users')) || [DEFAULT_ADMIN];
+// Database Initialization
+let users = JSON.parse(localStorage.getItem('eth_users')) || [CONFIG.admin];
+let invites = JSON.parse(localStorage.getItem('eth_invites')) || CONFIG.startingInvites;
+let currentUser = null;
 
-// Initialize Weather (Rain)
-const canvas = document.getElementById('weather-canvas');
-const ctx = canvas.getContext('2d');
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
+const auth = {
+    login: () => {
+        const u = document.getElementById('l-user').value;
+        const p = document.getElementById('l-pass').value;
+        const found = users.find(x => x.user === u && x.pass === p);
+        
+        if (found) {
+            currentUser = found;
+            ui.showApp();
+        } else {
+            alert("INVALID CREDENTIALS");
+        }
+    },
 
-let drops = [];
-for(let i = 0; i < 100; i++) {
-    drops.push({ x: Math.random()*canvas.width, y: Math.random()*canvas.height, l: Math.random()*20, v: Math.random()*5+5 });
-}
+    register: () => {
+        const inv = document.getElementById('r-inv').value;
+        const u = document.getElementById('r-user').value;
+        const p = document.getElementById('r-pass').value;
 
-function drawRain() {
-    ctx.clearRect(0,0, canvas.width, canvas.height);
-    ctx.strokeStyle = 'rgba(255,255,255,0.15)';
-    ctx.lineWidth = 1;
-    drops.forEach(d => {
-        ctx.beginPath(); ctx.moveTo(d.x, d.y); ctx.lineTo(d.x, d.y + d.l); ctx.stroke();
-        d.y += d.v; if(d.y > canvas.height) d.y = -20;
-    });
-    requestAnimationFrame(drawRain);
-}
-drawRain();
+        if (users.length >= CONFIG.maxUsers) return alert("SYSTEM CAPACITY FULL (MAX 2)");
+        if (!invites.includes(inv)) return alert("INVALID INVITE");
+        if (users.find(x => x.user === u)) return alert("USERNAME TAKEN");
 
-// App Flow
-const audio = document.getElementById('bg-audio');
+        // Create user and consume invite
+        const newUser = { user: u, pass: p, role: "MEMBER", img: `https://ui-avatars.com/api/?name=${u}` };
+        users.push(newUser);
+        invites = invites.filter(x => x !== inv);
+        
+        localStorage.setItem('eth_users', JSON.stringify(users));
+        localStorage.setItem('eth_invites', JSON.stringify(invites));
+        
+        alert("REGISTERED. LOG IN NOW.");
+        ui.toggleAuth('login');
+    },
 
-document.getElementById('entrance-layer').onclick = function() {
-    this.classList.add('hidden');
-    document.getElementById('auth-layer').classList.remove('hidden');
-    audio.play();
-    audio.volume = 0.5;
+    genInvite: () => {
+        const code = "ETH-" + Math.floor(Math.random() * 8999 + 1000);
+        invites.push(code);
+        localStorage.setItem('eth_invites', JSON.stringify(invites));
+        ui.updateInvites();
+    },
+
+    logout: () => location.reload()
 };
 
-function toggleAuth(type) {
-    document.getElementById('login-form').classList.toggle('hidden', type === 'reg');
-    document.getElementById('register-form').classList.toggle('hidden', type === 'login');
-    document.getElementById('auth-title').innerText = type === 'reg' ? "REGISTRATION" : "SYSTEM ACCESS";
-}
+const profile = {
+    save: () => {
+        const newImg = document.getElementById('edit-img').value;
+        const newRole = document.getElementById('edit-role').value;
 
-function handleLogin() {
-    const u = document.getElementById('user-input').value;
-    const p = document.getElementById('pass-input').value;
-    const found = users.find(user => user.user === u && user.pass === p);
+        // Find current user in the 'users' array and update them
+        const index = users.findIndex(x => x.user === currentUser.user);
+        if (newImg) users[index].img = newImg;
+        if (newRole) users[index].role = newRole;
 
-    if(found) {
-        enterApp(found);
-    } else {
-        alert("ACCESS DENIED");
+        localStorage.setItem('eth_users', JSON.stringify(users));
+        currentUser = users[index]; // Update local session
+        ui.refreshProfile();
+        ui.toggleEditor();
     }
-}
+};
 
-function handleRegister() {
-    const inv = document.getElementById('reg-invite').value;
-    const u = document.getElementById('reg-user').value;
-    const p = document.getElementById('reg-pass').value;
+const ui = {
+    toggleAuth: (mode) => {
+        document.getElementById('login-box').classList.toggle('hidden', mode === 'reg');
+        document.getElementById('reg-box').classList.toggle('hidden', mode === 'login');
+        document.getElementById('auth-title').innerText = mode.toUpperCase();
+    },
 
-    if(users.length >= 2) return alert("System capacity reached (Max 2 users).");
-    if(!inviteCodes.includes(inv)) return alert("Invalid Invite Code.");
+    showApp: () => {
+        document.getElementById('auth-ui').classList.add('hidden');
+        document.getElementById('app').classList.remove('hidden');
+        ui.refreshProfile();
+        
+        if (currentUser.user === "root") {
+            document.getElementById('admin-card').classList.remove('hidden');
+            ui.updateInvites();
+        }
+    },
 
-    const newUser = { user: u, pass: p };
-    users.push(newUser);
-    localStorage.setItem('users', JSON.stringify(users));
-    
-    // Remove invite after use
-    inviteCodes = inviteCodes.filter(c => c !== inv);
-    localStorage.setItem('invites', JSON.stringify(inviteCodes));
+    refreshProfile: () => {
+        document.getElementById('p-name').innerText = currentUser.user.toUpperCase();
+        document.getElementById('p-role').innerText = currentUser.role;
+        document.getElementById('p-img').src = currentUser.img || `https://ui-avatars.com/api/?name=${currentUser.user}`;
+    },
 
-    alert("Registration successful. Please login.");
-    toggleAuth('login');
-}
+    toggleEditor: () => document.getElementById('editor').classList.toggle('hidden'),
 
-function enterApp(user) {
-    document.getElementById('auth-layer').classList.add('hidden');
-    document.getElementById('main-ui').classList.remove('hidden');
-    document.getElementById('display-name').innerText = user.user.toUpperCase();
-    
-    if(user.user === 'root') {
-        document.getElementById('admin-panel').classList.remove('hidden');
-        renderInvites();
+    updateInvites: () => {
+        const list = document.getElementById('invite-list');
+        list.innerHTML = invites.map(c => `<li>${c}</li>`).join('');
     }
-}
+};
 
-function generateInvite() {
-    const code = "ETH-" + Math.floor(Math.random()*9999);
-    inviteCodes.push(code);
-    localStorage.setItem('invites', JSON.stringify(inviteCodes));
-    renderInvites();
-}
-
-function renderInvites() {
-    const list = document.getElementById('invite-list');
-    list.innerHTML = inviteCodes.map(c => `<li>${c}</li>`).join('');
-}
-
-function logout() { location.reload(); }
-
-document.getElementById('volume-ctrl').oninput = (e) => audio.volume = e.target.value;
+// Start music and entrance on click
+document.getElementById('entrance').onclick = function() {
+    this.classList.add('hidden');
+    document.getElementById('auth-ui').classList.remove('hidden');
+    const music = document.getElementById('bg-music');
+    music.src = CONFIG.defaultMusic;
+    music.play();
+};
