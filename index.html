@@ -1,77 +1,290 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <title>Etherac | Secure</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resell Store</title>
+    <style>
+        /* --- Temel Ayarlar --- */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #0a0a0a;
+            color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        /* --- Header --- */
+        header {
+            text-align: center;
+            padding: 40px 20px;
+            width: 100%;
+            border-bottom: 1px solid #222;
+            background: linear-gradient(180deg, #111 0%, #0a0a0a 100%);
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            background: -webkit-linear-gradient(#fff, #888);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        p.subtitle {
+            color: #666;
+            margin-top: 10px;
+            font-size: 0.9rem;
+        }
+
+        /* --- Tabs (Sekmeler) --- */
+        .tabs-container {
+            margin: 30px 0;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .tab-btn {
+            background-color: #1a1a1a;
+            border: 1px solid #333;
+            color: #aaa;
+            padding: 10px 25px;
+            cursor: pointer;
+            border-radius: 4px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+        }
+
+        .tab-btn:hover, .tab-btn.active {
+            background-color: #6d28d9; /* Mor vurgu rengi */
+            color: #fff;
+            border-color: #6d28d9;
+            box-shadow: 0 0 15px rgba(109, 40, 217, 0.4);
+        }
+
+        /* --- Ürün Grid --- */
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+            width: 90%;
+            max-width: 1200px;
+            padding-bottom: 50px;
+        }
+
+        .product-card {
+            background-color: #111;
+            border: 1px solid #222;
+            border-radius: 8px;
+            overflow: hidden;
+            transition: transform 0.3s ease, border-color 0.3s ease;
+            display: none; /* Varsayılan olarak gizli, JS ile açılacak */
+            animation: fadeIn 0.5s;
+        }
+
+        /* Aktif kategoriye sahip kartları göster */
+        .product-card.show {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            border-color: #6d28d9;
+        }
+
+        .image-placeholder {
+            width: 100%;
+            height: 160px;
+            background-color: #1a1a1a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #444;
+            font-size: 0.8rem;
+            position: relative;
+        }
+        
+        /* Gerçek resim kullanacağın zaman burayı aktif et */
+        .product-img {
+            width: 100%;
+            height: 160px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .card-info {
+            padding: 15px;
+        }
+
+        .card-title {
+            font-size: 1.1rem;
+            margin-bottom: 5px;
+            font-weight: 700;
+        }
+
+        .status {
+            font-size: 0.75rem;
+            padding: 2px 6px;
+            border-radius: 3px;
+            margin-bottom: 10px;
+            display: inline-block;
+        }
+
+        .status.active { background-color: #064e3b; color: #34d399; border: 1px solid #065f46; }
+        .status.update { background-color: #451a03; color: #fbbf24; border: 1px solid #78350f; }
+
+        .price-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 15px;
+        }
+
+        .price {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #fff;
+        }
+
+        .buy-btn {
+            background-color: #fff;
+            color: #000;
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            transition: background 0.2s;
+        }
+
+        .buy-btn:hover {
+            background-color: #ccc;
+        }
+
+    </style>
 </head>
 <body>
-    <canvas id="weather-canvas"></canvas>
-    
-    <!-- Entrance -->
-    <div id="entrance" class="overlay">
-        <h1 class="glitch">ETHERAC</h1>
-        <p>[ CLICK TO BOOT ]</p>
+
+    <header>
+        <h1>VORTEX RESELL</h1>
+        <p class="subtitle">Premium Software & Digital Solutions</p>
+    </header>
+
+    <div class="tabs-container">
+        <button class="tab-btn active" onclick="filterSelection('all')">Tümü</button>
+        <button class="tab-btn" onclick="filterSelection('fps')">FPS Games</button>
+        <button class="tab-btn" onclick="filterSelection('moba')">MOBA</button>
+        <button class="tab-btn" onclick="filterSelection('spoofer')">Spoofers</button>
     </div>
 
-    <!-- Auth -->
-    <div id="auth-ui" class="overlay hidden">
-        <div class="auth-card">
-            <h2 id="auth-title">LOGIN</h2>
-            <div id="login-box">
-                <input type="text" id="l-user" placeholder="USERNAME">
-                <input type="password" id="l-pass" placeholder="PASSWORD">
-                <button onclick="auth.login()">ACCESS</button>
-                <p onclick="ui.toggleAuth('reg')">Register with Invite</p>
-            </div>
-            <div id="reg-box" class="hidden">
-                <input type="text" id="r-inv" placeholder="INVITE CODE">
-                <input type="text" id="r-user" placeholder="USERNAME">
-                <input type="password" id="r-pass" placeholder="PASSWORD">
-                <button onclick="auth.register()">CREATE ACCOUNT</button>
-                <p onclick="ui.toggleAuth('login')">Back to Login</p>
-            </div>
-        </div>
-    </div>
-
-    <!-- Main App -->
-    <main id="app" class="hidden">
-        <div class="main-layout">
-            <!-- Profile Card -->
-            <div class="glass-card" id="profile-card">
-                <div class="profile-header">
-                    <img id="p-img" src="https://ui-avatars.com/api/?name=Etherac">
-                    <h1 id="p-name">USER</h1>
-                    <p id="p-role">MEMBER</p>
-                </div>
-                
-                <div class="profile-editor hidden" id="editor">
-                    <input type="text" id="edit-img" placeholder="AVATAR URL">
-                    <input type="text" id="edit-role" placeholder="CUSTOM ROLE">
-                    <button onclick="profile.save()">SAVE CHANGES</button>
-                </div>
-
-                <div class="controls">
-                    <button onclick="ui.toggleEditor()">CUSTOMIZE PROFILE</button>
-                    <button onclick="auth.logout()" class="red">DISCONNECT</button>
-                </div>
-            </div>
-
-            <!-- Admin Card -->
-            <div class="glass-card admin-only hidden" id="admin-card">
-                <h3>ADMIN PANEL</h3>
-                <div id="invite-area">
-                    <p>ACTIVE INVITES:</p>
-                    <ul id="invite-list"></ul>
-                    <button onclick="auth.genInvite()">GENERATE NEW CODE</button>
+    <div class="products-grid">
+        
+        <div class="product-card show fps">
+            <div class="image-placeholder">GÖRSEL 1</div>
+            <div class="card-info">
+                <span class="status active">Çalışıyor</span>
+                <div class="card-title">Valorant External</div>
+                <div class="price-row">
+                    <span class="price">₺150</span>
+                    <a href="#" class="buy-btn">Satın Al</a>
                 </div>
             </div>
         </div>
-    </main>
 
-    <audio id="bg-music" loop></audio>
-    <script src="config.js"></script>
-    <script src="script.js"></script>
+        <div class="product-card show moba">
+            <div class="image-placeholder">GÖRSEL 2</div>
+            <div class="card-info">
+                <span class="status active">Çalışıyor</span>
+                <div class="card-title">LoL Script Platform</div>
+                <div class="price-row">
+                    <span class="price">₺200</span>
+                    <a href="#" class="buy-btn">Satın Al</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="product-card show spoofer">
+            <div class="image-placeholder">GÖRSEL 3</div>
+            <div class="card-info">
+                <span class="status update">Güncelleniyor</span>
+                <div class="card-title">HWID Spoofer Perm</div>
+                <div class="price-row">
+                    <span class="price">₺450</span>
+                    <a href="#" class="buy-btn">Satın Al</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="product-card show fps">
+            <div class="image-placeholder">GÖRSEL 4</div>
+            <div class="card-info">
+                <span class="status active">Çalışıyor</span>
+                <div class="card-title">CS2 Legit Helper</div>
+                <div class="price-row">
+                    <span class="price">₺120</span>
+                    <a href="#" class="buy-btn">Satın Al</a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // Sekme Değiştirme ve Filtreleme Mantığı
+        function filterSelection(category) {
+            var cards = document.getElementsByClassName("product-card");
+            var btns = document.getElementsByClassName("tab-btn");
+
+            // 1. Tüm kartları gez
+            for (var i = 0; i < cards.length; i++) {
+                if (category === "all") {
+                    // "Tümü" seçildiyse hepsini göster
+                    cards[i].classList.add("show");
+                } else {
+                    // Kategori eşleşiyorsa göster, değilse gizle
+                    if (cards[i].classList.contains(category)) {
+                        cards[i].classList.add("show");
+                    } else {
+                        cards[i].classList.remove("show");
+                    }
+                }
+            }
+
+            // 2. Butonların aktiflik durumunu güncelle
+            // Tıklanan butonu bulmak için event'i kullanabilirdik ama basit döngü yeterli
+            // (Bu basit örnekte buton stilini manuel sıfırlayıp tıklanana active ekliyoruz)
+        }
+
+        // Butonlara tıklayınca aktif sınıfını değiştiren kod bloğu
+        var btnContainer = document.querySelector(".tabs-container");
+        var btns = btnContainer.getElementsByClassName("tab-btn");
+
+        for (var i = 0; i < btns.length; i++) {
+            btns[i].addEventListener("click", function() {
+                var current = document.getElementsByClassName("active");
+                current[0].className = current[0].className.replace(" active", "");
+                this.className += " active";
+            });
+        }
+    </script>
+
 </body>
 </html>
