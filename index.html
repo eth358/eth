@@ -3,22 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NEXUS - Premium Software Store</title>
+    <title>KUWAII CHEATS - Premium Store</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700;900&display=swap" rel="stylesheet">
     
     <style>
-        /* --- CSS BAŞLANGICI --- */
+        /* --- SİYAH BEYAZ TEMA CSS --- */
         :root {
-            --bg-color: #09090b;
-            --card-bg: #121214;
-            --primary: #8b5cf6; /* Mor */
-            --accent: #10b981;  /* Yeşil */
+            --bg-color: #050505;
+            --card-bg: #0a0a0a;
+            --border: #333333;
             --text-main: #ffffff;
-            --text-muted: #a1a1aa;
-            --border: #27272a;
+            --text-sub: #888888;
+            --accent: #ffffff; /* Vurgu rengi beyaz */
+            --hover-glow: rgba(255, 255, 255, 0.15);
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', system-ui, sans-serif; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
 
         body {
             background-color: var(--bg-color);
@@ -27,268 +28,345 @@
             flex-direction: column;
             align-items: center;
             min-height: 100vh;
+            overflow-x: hidden;
         }
 
-        /* Navbar & Header */
+        /* --- Animasyonlar --- */
+        /* Sayfa Yüklenme Efekti (Yukarıdan Aşağı) */
+        @keyframes slideDownFade {
+            0% { opacity: 0; transform: translateY(-50px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        .animate-entry {
+            animation: slideDownFade 1s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+        }
+
+        /* Header */
         header {
             width: 100%;
-            padding: 40px 20px;
+            padding: 60px 20px;
             text-align: center;
-            background: radial-gradient(circle at top, #1e1b4b 0%, var(--bg-color) 70%);
+            background: linear-gradient(180deg, #000 0%, var(--bg-color) 100%);
             border-bottom: 1px solid var(--border);
+            z-index: 10;
         }
 
         .logo {
-            font-size: 3rem;
+            font-size: 3.5rem;
             font-weight: 900;
-            letter-spacing: -2px;
-            background: linear-gradient(to right, #fff, var(--primary));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            letter-spacing: -3px;
+            color: #fff;
             margin-bottom: 10px;
+            text-transform: uppercase;
+            text-shadow: 0 0 20px rgba(255,255,255,0.3);
         }
 
-        .subtitle { color: var(--text-muted); font-size: 1rem; }
+        .logo span { color: #666; } /* "Cheats" kısmı gri olabilir */
 
-        /* Tabs (Sekmeler) */
+        .subtitle {
+            color: var(--text-sub);
+            font-size: 1rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 40px;
+        }
+
+        /* Filtre Butonları */
         .filter-container {
             display: flex;
             justify-content: center;
             gap: 15px;
-            margin: 40px 0;
             flex-wrap: wrap;
         }
 
         .filter-btn {
             background: transparent;
             border: 1px solid var(--border);
-            color: var(--text-muted);
-            padding: 10px 24px;
-            border-radius: 50px;
+            color: var(--text-sub);
+            padding: 12px 30px;
+            border-radius: 4px; /* Keskin hatlar */
             cursor: pointer;
-            font-weight: 600;
-            transition: 0.3s ease;
+            font-weight: 700;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
         }
 
         .filter-btn:hover, .filter-btn.active {
-            background: var(--primary);
-            color: white;
-            border-color: var(--primary);
-            box-shadow: 0 0 20px rgba(139, 92, 246, 0.4);
+            background: #fff;
+            color: #000;
+            border-color: #fff;
+            box-shadow: 0 0 15px rgba(255,255,255,0.4);
+            transform: translateY(-2px);
         }
 
-        /* Grid Alanı */
+        /* Grid Sistemi */
         .container {
             max-width: 1200px;
             width: 90%;
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 25px;
-            padding-bottom: 50px;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 30px;
+            padding: 60px 0;
         }
 
-        /* Ürün Kartı */
+        /* Kart Tasarımı */
         .card {
             background: var(--card-bg);
             border: 1px solid var(--border);
-            border-radius: 16px;
+            border-radius: 8px;
             overflow: hidden;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
             position: relative;
+            transition: all 0.4s ease;
             display: none; /* JS ile açılacak */
-            animation: fadeUp 0.5s ease forwards;
         }
 
-        .card.show { display: block; }
-
-        @keyframes fadeUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+        /* Kart Görünme Animasyonu */
+        .card.show {
+            display: block;
+            animation: slideDownFade 0.6s ease forwards;
         }
 
         .card:hover {
-            transform: translateY(-5px);
-            border-color: var(--primary);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            border-color: #fff;
+            transform: translateY(-10px);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.8);
+        }
+
+        .card-img-wrapper {
+            width: 100%;
+            height: 200px;
+            overflow: hidden;
+            position: relative;
+            border-bottom: 1px solid var(--border);
         }
 
         .card-img {
             width: 100%;
-            height: 180px;
+            height: 100%;
             object-fit: cover;
-            border-bottom: 1px solid var(--border);
+            transition: transform 0.5s ease;
+            filter: grayscale(100%); /* Resimleri siyah beyaz yapar */
         }
 
-        .card-body { padding: 20px; }
+        .card:hover .card-img {
+            transform: scale(1.1);
+            filter: grayscale(0%); /* Hoverda renk gelsin istersen burayı 0 yap, yoksa 100 kalsın */
+        }
+
+        .card-body { padding: 25px; }
 
         .tags {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 12px;
+            margin-bottom: 15px;
         }
 
         .tag {
-            font-size: 0.75rem;
-            padding: 4px 8px;
-            border-radius: 6px;
+            font-size: 0.7rem;
+            padding: 5px 10px;
+            background: #222;
+            color: #fff;
+            border: 1px solid #444;
+            border-radius: 4px;
             font-weight: 700;
             text-transform: uppercase;
         }
-        
-        .tag.safe { background: rgba(16, 185, 129, 0.2); color: var(--accent); }
-        .tag.risk { background: rgba(239, 68, 68, 0.2); color: #ef4444; }
-        .tag.update { background: rgba(245, 158, 11, 0.2); color: #f59e0b; }
 
-        .card-title { font-size: 1.25rem; font-weight: 700; margin-bottom: 8px; }
-        .card-desc { color: var(--text-muted); font-size: 0.9rem; line-height: 1.5; margin-bottom: 20px; }
+        .card-title {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: #fff;
+            margin-bottom: 10px;
+        }
+
+        .card-desc {
+            color: var(--text-sub);
+            font-size: 0.9rem;
+            line-height: 1.6;
+            margin-bottom: 25px;
+        }
 
         .card-footer {
             display: flex;
             justify-content: space-between;
             align-items: center;
             border-top: 1px solid var(--border);
-            padding-top: 15px;
+            padding-top: 20px;
         }
 
-        .price { font-size: 1.2rem; font-weight: 700; color: #fff; }
-        
-        .btn-buy {
-            background: white;
-            color: black;
-            text-decoration: none;
-            padding: 8px 16px;
-            border-radius: 8px;
+        .price {
+            font-size: 1.1rem;
             font-weight: 700;
-            font-size: 0.9rem;
-            transition: 0.2s;
+            color: #fff;
+        }
+
+        /* Satın Al Butonu */
+        .btn-buy {
+            background: #fff;
+            color: #000;
+            text-decoration: none;
+            padding: 10px 24px;
+            border-radius: 4px;
+            font-weight: 800;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            transition: 0.3s;
             display: flex;
             align-items: center;
-            gap: 5px;
+            gap: 8px;
         }
 
-        .btn-buy:hover { background: var(--primary); color: white; }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .logo { font-size: 2rem; }
-            .container { grid-template-columns: 1fr; }
+        .btn-buy:hover {
+            background: #ccc;
+            transform: translateX(5px);
         }
-        /* --- CSS BİTİŞ --- */
+
+        /* Footer */
+        footer {
+            margin-top: auto;
+            padding: 40px;
+            color: #444;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+        }
+
     </style>
 </head>
 <body>
 
-    <header>
-        <div class="logo"><i class="fa-solid fa-ghost"></i> NEXUS CHEATS</div>
-        <p class="subtitle">Undetected Solutions for Professional Gamers</p>
+    <header class="animate-entry">
+        <div class="logo">KUWAII <span>CHEATS</span></div>
+        <p class="subtitle">Professional Monochrome Digital Solutions</p>
         
         <div class="filter-container">
-            <button class="filter-btn active" onclick="filterSelection('all')">All Products</button>
-            <button class="filter-btn" onclick="filterSelection('fps')">FPS Games</button>
-            <button class="filter-btn" onclick="filterSelection('moba')">MOBA / RPG</button>
-            <button class="filter-btn" onclick="filterSelection('spoofer')">HWID Spoofer</button>
+            <button class="filter-btn active" onclick="filterSelection('all')">Tümü</button>
+            <button class="filter-btn" onclick="filterSelection('cs2')">CS2</button>
+            <button class="filter-btn" onclick="filterSelection('lol')">LoL</button>
+            <button class="filter-btn" onclick="filterSelection('spoofer')">Spoofer</button>
+            <button class="filter-btn" onclick="filterSelection('bypass')">Bypass</button>
         </div>
     </header>
 
-    <div class="container">
+    <div class="container animate-entry" style="animation-delay: 0.2s;">
         
-        <div class="card show fps">
-            <img src="https://placehold.co/600x360/1a1a1a/8b5cf6?text=VAL+External" alt="Product" class="card-img">
+        <div class="card show cs2">
+            <div class="card-img-wrapper">
+                <img src="https://placehold.co/600x400/111/fff?text=CS2+LEGIT" alt="CS2" class="card-img">
+            </div>
             <div class="card-body">
-                <div class="tags">
-                    <span class="tag safe"><i class="fa-solid fa-shield-halved"></i> UNDETECTED</span>
-                    <span class="tag update">V2.1</span>
-                </div>
-                <h3 class="card-title">Valorant Aimbot & ESP</h3>
-                <p class="card-desc">Gelişmiş humanized aimbot ve wallhack özellikleri. Tamamen external ve güvenli.</p>
+                <div class="tags"><span class="tag">Undetected</span></div>
+                <h3 class="card-title">CS2 Legit Pro</h3>
+                <p class="card-desc">Rank kasmak için optimize edilmiş, OBS proof ve güvenli external yazılım.</p>
                 <div class="card-footer">
-                    <span class="price">₺150 / Aylık</span>
-                    <a href="#" class="btn-buy">Satın Al <i class="fa-solid fa-arrow-right"></i></a>
+                    <span class="price">₺150 / Ay</span>
+                    <a href="https://discord.gg/ufYTRUY2PH" target="_blank" class="btn-buy">
+                        Satın Al <i class="fa-brands fa-discord"></i>
+                    </a>
                 </div>
             </div>
         </div>
 
-        <div class="card show moba">
-            <img src="https://placehold.co/600x360/1a1a1a/10b981?text=LOL+Script" alt="Product" class="card-img">
+        <div class="card show lol">
+            <div class="card-img-wrapper">
+                <img src="https://placehold.co/600x400/111/fff?text=LOL+SCRIPT" alt="LoL" class="card-img">
+            </div>
             <div class="card-body">
-                <div class="tags">
-                    <span class="tag safe"><i class="fa-solid fa-check"></i> SAFE</span>
-                </div>
-                <h3 class="card-title">LoL Evade & Orbwalker</h3>
-                <p class="card-desc">Otomatik skill dodgelama ve kusursuz kombo sistemi. Challenger config dahildir.</p>
+                <div class="tags"><span class="tag">Safe</span></div>
+                <h3 class="card-title">LoL BGX Platform</h3>
+                <p class="card-desc">Gelişmiş evade, orbwalker ve prediction. Tüm şampiyonlar desteklenir.</p>
                 <div class="card-footer">
-                    <span class="price">₺200 / Aylık</span>
-                    <a href="#" class="btn-buy">Satın Al <i class="fa-solid fa-arrow-right"></i></a>
+                    <span class="price">₺200 / Ay</span>
+                    <a href="https://discord.gg/ufYTRUY2PH" target="_blank" class="btn-buy">
+                        Satın Al <i class="fa-brands fa-discord"></i>
+                    </a>
                 </div>
             </div>
         </div>
 
         <div class="card show spoofer">
-            <img src="https://placehold.co/600x360/1a1a1a/ef4444?text=HWID+Spoofer" alt="Product" class="card-img">
+            <div class="card-img-wrapper">
+                <img src="https://placehold.co/600x400/111/fff?text=HWID+SPOOFER" alt="Spoofer" class="card-img">
+            </div>
             <div class="card-body">
-                <div class="tags">
-                    <span class="tag safe">PERMANENT</span>
-                </div>
-                <h3 class="card-title">Global HWID Unbanner</h3>
-                <p class="card-desc">Tüm EAC ve BattlEye oyunlarında donanım banını kaldırır. Tek tıkla çalışır.</p>
+                <div class="tags"><span class="tag">Permanent</span></div>
+                <h3 class="card-title">Global HWID Unlocker</h3>
+                <p class="card-desc">Anakart (Mobo), SSD ve RAM seri numaralarını kalıcı olarak değiştirir.</p>
                 <div class="card-footer">
                     <span class="price">₺450 / Sınırsız</span>
-                    <a href="#" class="btn-buy">Satın Al <i class="fa-solid fa-arrow-right"></i></a>
+                    <a href="https://discord.gg/ufYTRUY2PH" target="_blank" class="btn-buy">
+                        Satın Al <i class="fa-brands fa-discord"></i>
+                    </a>
                 </div>
             </div>
         </div>
 
-        <div class="card show fps">
-            <img src="https://placehold.co/600x360/1a1a1a/f59e0b?text=CS2+Legit" alt="Product" class="card-img">
+        <div class="card show bypass">
+            <div class="card-img-wrapper">
+                <img src="https://placehold.co/600x400/111/fff?text=AC+BYPASS" alt="Bypass" class="card-img">
+            </div>
             <div class="card-body">
-                <div class="tags">
-                    <span class="tag update">NEW</span>
-                </div>
-                <h3 class="card-title">CS2 Prime Legit</h3>
-                <p class="card-desc">Inventory changer ve rank boost için özel tasarlanmış legit hile paketi.</p>
+                <div class="tags"><span class="tag">Kernel</span></div>
+                <h3 class="card-title">EAC / BE Bypass</h3>
+                <p class="card-desc">Anti-cheat sistemlerini devre dışı bırakarak güvenli enjeksiyon sağlar.</p>
                 <div class="card-footer">
-                    <span class="price">₺120 / Haftalık</span>
-                    <a href="#" class="btn-buy">Satın Al <i class="fa-solid fa-arrow-right"></i></a>
+                    <span class="price">₺300 / Ay</span>
+                    <a href="https://discord.gg/ufYTRUY2PH" target="_blank" class="btn-buy">
+                        Satın Al <i class="fa-brands fa-discord"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+         <div class="card show cs2">
+            <div class="card-img-wrapper">
+                <img src="https://placehold.co/600x400/111/fff?text=CS2+RAGE" alt="CS2 Rage" class="card-img">
+            </div>
+            <div class="card-body">
+                <div class="tags"><span class="tag">HvH</span></div>
+                <h3 class="card-title">CS2 Rage/HvH</h3>
+                <p class="card-desc">Sunucuları domine etmek için spinbot ve anti-aim özellikleri.</p>
+                <div class="card-footer">
+                    <span class="price">₺180 / Ay</span>
+                    <a href="https://discord.gg/ufYTRUY2PH" target="_blank" class="btn-buy">
+                        Satın Al <i class="fa-brands fa-discord"></i>
+                    </a>
                 </div>
             </div>
         </div>
 
     </div>
 
+    <footer>
+        &copy; 2024 KUWAII CHEATS. All Rights Reserved.
+    </footer>
+
     <script>
-        /* --- JAVASCRIPT BAŞLANGICI --- */
-        
-        // Kategori Filtreleme Fonksiyonu
+        // Kategori Filtreleme Sistemi
         function filterSelection(category) {
             var cards = document.getElementsByClassName("card");
             var btns = document.getElementsByClassName("filter-btn");
 
-            // 1. Kartları Gizle/Göster
+            // Buton aktiflik durumu
+            for (var i = 0; i < btns.length; i++) {
+                btns[i].classList.remove("active");
+                if (btns[i].getAttribute("onclick").includes(category)) {
+                    btns[i].classList.add("active");
+                }
+            }
+
+            // Kartları göster/gizle
             for (var i = 0; i < cards.length; i++) {
-                // Kartı önce gizle (animasyonun tekrar çalışması için)
                 cards[i].classList.remove("show");
-                
-                // Kısa bir gecikme ile kontrol et (akıcı geçiş için opsiyonel)
                 if (category === "all" || cards[i].classList.contains(category)) {
-                    cards[i].classList.add("show");
+                    // Animasyonu tetiklemek için ufak bir gecikme hilesi (opsiyonel)
+                    setTimeout((card) => {
+                        card.classList.add("show");
+                    }, 50, cards[i]);
                 }
             }
         }
-
-        // Butonların 'Active' Durumunu Ayarlama
-        var btnContainer = document.querySelector(".filter-container");
-        var btns = btnContainer.getElementsByClassName("filter-btn");
-
-        for (var i = 0; i < btns.length; i++) {
-            btns[i].addEventListener("click", function() {
-                var current = document.getElementsByClassName("active");
-                if (current.length > 0) { 
-                    current[0].className = current[0].className.replace(" active", "");
-                }
-                this.className += " active";
-            });
-        }
-        /* --- JAVASCRIPT BİTİŞ --- */
     </script>
+
 </body>
 </html>
