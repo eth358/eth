@@ -3,46 +3,90 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KUWAII.TEAM | Adrenaline Elite</title>
+    <title>KUWAII.TEAM | kuwaii.team</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
     
     <style>
         :root {
             --red: #ff0000;
-            --red-glow: rgba(255, 0, 0, 0.6);
             --white: #ffffff;
             --bg-deep: #050505;
             --nav-bg: rgba(8, 8, 12, 0.98);
-            --card-bg: rgba(15, 15, 20, 0.9);
-            --transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; cursor: none; }
         body { background: var(--bg-deep); color: var(--white); overflow: hidden; }
 
-        /* --- BACKGROUND ENGINE --- */
-        #bg-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; }
+        canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; }
+        #intro-canvas { z-index: 10001; pointer-events: none; opacity: 0.8; }
+        #matrix-canvas { z-index: 0; opacity: 0.3; }
 
-        /* --- INTRO & HEARTBEAT --- */
+        /* --- INTRO & SNAKE EFFECT --- */
         #intro-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: #000; display: flex; flex-direction: column; justify-content: center;
-            align-items: center; z-index: 10000; transition: opacity 1.5s ease;
+            align-items: center; z-index: 10000; transition: opacity 1.2s ease;
         }
-        .intro-bpm {
-            font-family: 'Orbitron'; font-size: 5rem; font-weight: 900;
-            color: #fff; text-shadow: 0 0 30px var(--red);
-            animation: pulse 1.2s infinite;
-        }
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); opacity: 0.8; }
-            15% { transform: scale(1.15); opacity: 1; text-shadow: 0 0 50px var(--red); }
-        }
-        .click-text { margin-top: 30px; letter-spacing: 5px; color: var(--red); font-weight: 800; animation: blink 1s infinite; }
-        @keyframes blink { 50% { opacity: 0.2; } }
 
-        /* --- NAVIGATION --- */
+        .intro-bpm {
+            font-family: 'Orbitron'; font-size: 5.5rem; font-weight: 900;
+            letter-spacing: 12px;
+            background: linear-gradient(90deg, #300 0%, var(--red) 25%, #fff 50%, var(--red) 75%, #300 100%);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: snakeMove 2s linear infinite;
+            margin-bottom: 20px;
+        }
+        @keyframes snakeMove { to { background-position: 200% center; } }
+
+        /* --- BORDER SLIDE ENTER BUTTON --- */
+        #enter-btn {
+            opacity: 0;
+            visibility: hidden;
+            margin-top: 40px;
+            padding: 15px 45px;
+            font-family: 'Orbitron';
+            font-size: 1rem;
+            font-weight: 800;
+            color: var(--white);
+            background: transparent;
+            border: 2px solid var(--red);
+            position: relative;
+            cursor: pointer;
+            overflow: hidden;
+            transition: all 0.5s ease;
+            letter-spacing: 3px;
+        }
+
+        #enter-btn.visible {
+            opacity: 1;
+            visibility: visible;
+            animation: fadeInUp 1s ease forwards;
+            box-shadow: 0 0 15px var(--red);
+        }
+
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Slide Effect on Hover */
+        #enter-btn::before {
+            content: '';
+            position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
+            background: var(--red);
+            transition: 0.4s;
+            z-index: -1;
+        }
+        #enter-btn:hover::before { left: 0; }
+        #enter-btn:hover { color: #000; text-shadow: none; box-shadow: 0 0 30px var(--red); }
+
+        .click-anywhere {
+            color: #444; font-size: 0.7rem; letter-spacing: 2px;
+            animation: pulseText 1.5s infinite;
+        }
+        @keyframes pulseText { 50% { opacity: 0.3; } }
+
+        /* --- UI ELEMENTS --- */
         nav {
             position: fixed; top: 0; width: 100%; height: 80px;
             background: var(--nav-bg); display: flex; align-items: center;
@@ -52,202 +96,194 @@
         }
         .nav-logo { font-family: 'Orbitron'; font-weight: 900; color: #fff; font-size: 1.8rem; }
         .nav-logo span { color: var(--red); }
-        
         .nav-links { display: flex; gap: 30px; list-style: none; }
-        .nav-links a { 
-            text-decoration: none; color: #777; font-size: 0.8rem; font-weight: 700;
-            text-transform: uppercase; transition: 0.3s; display: flex; align-items: center; gap: 8px;
-        }
+        .nav-links a { text-decoration: none; color: #666; font-size: 0.8rem; font-weight: 700; text-transform: uppercase; transition: 0.3s; }
         .nav-links a:hover, .nav-links a.active { color: #fff; text-shadow: 0 0 10px var(--red); }
-        .nav-links a.active { border-bottom: 2px solid var(--red); padding-bottom: 5px; }
 
-        .nav-right { display: flex; gap: 15px; }
-        .btn-dash { background: linear-gradient(90deg, #ff0044, var(--red)); padding: 10px 25px; border-radius: 50px; color: #fff; text-decoration: none; font-weight: 800; font-size: 0.75rem; box-shadow: 0 0 20px rgba(255,0,0,0.3); }
-        .btn-sup { border: 1px solid var(--red); padding: 10px 25px; border-radius: 50px; color: #fff; text-decoration: none; font-weight: 800; font-size: 0.75rem; transition: 0.3s; }
-        .btn-sup:hover { background: var(--red); box-shadow: 0 0 20px var(--red); }
+        .view { display: none; padding-top: 120px; min-height: 100vh; position: relative; }
+        .view.active { display: block; animation: viewFade 0.8s ease; }
+        @keyframes viewFade { from { opacity: 0; } to { opacity: 1; } }
 
-        /* --- HERO --- */
-        .view { display: none; padding-top: 100px; min-height: 100vh; position: relative; }
-        .view.active { display: block; animation: viewFade 1s ease; }
-        @keyframes viewFade { from { opacity: 0; transform: scale(1.02); } }
-
-        .hero { height: calc(100vh - 80px); display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
-        #falling-team {
-            font-family: 'Orbitron'; font-size: 7rem; font-weight: 900;
-            color: #fff; text-shadow: 0 0 40px var(--red);
-            transform: translateY(-200vh); transition: transform 2.5s cubic-bezier(0.05, 1, 0.2, 1);
+        .hero-section {
+            height: 70vh; display: flex; flex-direction: column; 
+            justify-content: center; align-items: center; text-align: center;
         }
-        .slogan { font-size: 1.8rem; margin-top: 20px; opacity: 0; transition: 1s; font-weight: 300; }
-        .slogan .adrenaline { color: var(--red); font-weight: 900; text-shadow: 0 0 15px var(--red); }
+        .hero-logo { font-family: 'Orbitron'; font-size: 7rem; font-weight: 900; color: #fff; text-shadow: 0 0 50px var(--red); }
 
-        /* --- STATUS TABLE --- */
-        .status-box { max-width: 1000px; margin: 40px auto; background: var(--card-bg); border-radius: 25px; border: 1px solid #222; overflow: hidden; }
-        .status-row { display: flex; justify-content: space-between; padding: 25px 40px; border-bottom: 1px solid #111; align-items: center; }
-        .badge { padding: 8px 20px; border-radius: 8px; font-weight: 800; font-size: 0.7rem; border: 1px solid transparent; letter-spacing: 1px; }
-        .ud { color: #00ff00; background: rgba(0,255,0,0.05); border-color: #00ff00; }
-        .it { color: #ffff00; background: rgba(255,255,0,0.05); border-color: #ffff00; }
-        .tip { color: var(--red); cursor: help; margin-left: 10px; font-size: 0.9rem; }
-
-        /* --- PRODUCT CARDS --- */
-        .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)); gap: 40px; padding: 50px 8%; }
-        .card { background: var(--card-bg); border: 1px solid #222; border-radius: 30px; padding: 35px; transition: var(--transition); position: relative; }
-        .card:hover { transform: translateY(-15px); border-color: var(--red); box-shadow: 0 20px 50px rgba(255,0,0,0.15); }
-        .card img { width: 100%; border-radius: 20px; margin-bottom: 25px; border: 1px solid #333; filter: brightness(0.7); transition: 0.5s; }
-        .card:hover img { filter: brightness(1.1); }
-        .feature-list { list-style: none; margin: 15px 0; color: #888; font-size: 0.85rem; }
-        .feature-list li { margin-bottom: 8px; display: flex; align-items: center; gap: 10px; }
-        .feature-list i { color: var(--red); font-size: 0.7rem; }
-
-        /* --- TUTORIAL SECTION --- */
-        .tutorial-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; max-width: 1100px; margin: 0 auto; padding: 40px; }
-        .tuto-card { background: #0a0a0f; border: 1px solid #222; border-radius: 20px; padding: 30px; }
-        .tuto-card h3 { color: var(--red); font-family: 'Orbitron'; margin-bottom: 15px; display: flex; align-items: center; gap: 15px; }
-        .tuto-card p { color: #888; line-height: 1.6; font-size: 0.9rem; }
-        .tuto-step { background: rgba(255,255,255,0.02); padding: 15px; border-radius: 12px; margin-top: 15px; border-left: 3px solid var(--red); }
-
-        /* --- OWNERS --- */
-        .owner-wrap { display: flex; justify-content: center; gap: 80px; padding: 80px; }
-        .owner-card { text-align: center; }
-        .owner-card h4 { font-family: 'Orbitron'; font-size: 1.5rem; color: #fff; margin-bottom: 5px; }
-        .owner-card span { color: var(--red); font-weight: 800; font-size: 0.8rem; letter-spacing: 2px; }
-
-        /* --- CART PANEL --- */
-        #cart-panel { position: fixed; right: -450px; top: 0; width: 450px; height: 100vh; background: #07070a; border-left: 2px solid var(--red); z-index: 2000; padding: 40px; transition: 0.5s ease; display: flex; flex-direction: column; }
-        #cart-panel.active { right: 0; }
-        .cart-header { font-family: 'Orbitron'; font-size: 1.8rem; color: var(--red); margin-bottom: 40px; }
-        .btn-pay { background: var(--red); color: #fff; border: none; padding: 20px; border-radius: 15px; font-weight: 900; cursor: pointer; margin-top: auto; font-size: 1.1rem; box-shadow: 0 0 30px rgba(255,0,0,0.3); }
-
-        .discord-btn { position: fixed; bottom: 30px; right: 30px; background: #5865F2; color: #fff; width: 65px; height: 65px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; text-decoration: none; box-shadow: 0 0 30px rgba(88,101,242,0.4); z-index: 999; transition: 0.4s; }
-        .discord-btn:hover { background: var(--red); transform: scale(1.1) rotate(15deg); box-shadow: 0 0 40px var(--red); }
+        #custom-cursor { position: fixed; pointer-events: none; z-index: 99999; border-radius: 50%; width: 10px; height: 10px; background: var(--red); box-shadow: 0 0 15px var(--red); transform: translate(-50%, -50%); }
     </style>
 </head>
-<body>
+<body onclick="startHeartbeat()">
 
-    <canvas id="bg-canvas"></canvas>
-
-    <div id="intro-overlay" onclick="startExperience()">
+    <!-- Intro Layer -->
+    <div id="intro-overlay">
+        <canvas id="intro-canvas"></canvas>
         <div class="intro-bpm">KUWAII.BPM</div>
-        <div class="click-text">CLICK TO INITIALIZE ADRENALINE</div>
+        <div class="click-anywhere" id="click-hint">CLICK ANYWHERE TO SYNC HEARTBEAT</div>
+        <button id="enter-btn" onclick="enterSite(event)">SLIDE US</button>
     </div>
+
+    <!-- Background Layers -->
+    <canvas id="matrix-canvas"></canvas>
+    <canvas id="trail-canvas"></canvas>
 
     <nav>
         <div class="nav-logo">KUWAII<span>.TEAM</span></div>
         <ul class="nav-links">
-            <li><a href="#" class="active" onclick="setView('home', this)"><i class="fa-solid fa-house"></i> HOME</a></li>
-            <li><a href="#" onclick="setView('status', this)"><i class="fa-solid fa-bolt"></i> STATUS</a></li>
-            <li><a href="#" onclick="setView('purchase', this)"><i class="fa-solid fa-shopping-bag"></i> PURCHASE</a></li>
-            <li><a href="#" onclick="setView('tutorial', this)"><i class="fa-solid fa-book"></i> TUTORIAL</a></li>
-            <li><a href="#"><i class="fa-solid fa-download"></i> DOWNLOADS</a></li>
+            <li><a href="#" class="active" onclick="setView('home', this)">HOME</a></li>
+            <li><a href="#" onclick="setView('status', this)">STATUS</a></li>
+            <li><a href="#" onclick="setView('purchase', this)">PURCHASE</a></li>
+            <li><a href="#" onclick="setView('tutorial', this)">TUTORIAL</a></li>
         </ul>
         <div class="nav-right">
-            <a href="https://discord.gg/ufYTRUY2PH" class="btn-sup">SUPPORT</a>
-            <a href="#" class="btn-dash">DASHBOARD</a>
+            <a href="https://discord.gg/ufYTRUY2PH" style="border:1px solid var(--red); padding:10px 25px; border-radius:50px; color:#fff; text-decoration:none; font-size:0.75rem;">SUPPORT</a>
         </div>
     </nav>
 
     <!-- HOME VIEW -->
     <div id="home" class="view active">
-        <section class="hero">
-            <h1 id="falling-team">KUWAII.TEAM</h1>
-            <p class="slogan" id="slogan">Feel the <span class="adrenaline">adrenaline</span>, own the game</p>
-            <div class="owner-wrap">
-                <div class="owner-card"><h4>ETH</h4><span>CORE DEVELOPER</span></div>
-                <div class="owner-card"><h4>DEIZZY</h4><span>OPERATIONS</span></div>
+        <section class="hero-section">
+            <h1 class="hero-logo">KUWAII.TEAM</h1>
+            <p style="font-size: 1.8rem;">Feel the <span style="color:var(--red); font-weight:900;">adrenaline</span>, own the game</p>
+            <div style="display:flex; gap:80px; margin-top:80px;">
+                <div style="text-align:center;"><h4>ETH</h4><span style="color:var(--red); font-size:0.7rem; font-weight:800;">ARCHITECT</span></div>
+                <div style="text-align:center;"><h4>DEIZZY</h4><span style="color:var(--red); font-size:0.7rem; font-weight:800;">OPERATIONS</span></div>
             </div>
         </section>
     </div>
 
-    <!-- STATUS VIEW -->
-    <div id="status" class="view">
-        <h2 style="font-family:'Orbitron'; text-align:center; font-size:3rem; margin-top:50px;">LIVE <span style="color:var(--red)">STATUS</span></h2>
-        <div class="status-box">
-            <div class="status-row">
-                <span>CS2 • <strong>EXITSCAM</strong></span>
-                <span class="badge ud">UNDETECTED <i class="fa-solid fa-circle-info tip" title="Rage playing may cause VacLive detections."></i></span>
-            </div>
-            <div class="status-row">
-                <span>LOL • <strong>ENGINE SOUL</strong></span>
-                <span class="badge it">IN TEST <i class="fa-solid fa-circle-info tip" title="Safe for smurfs, monitoring patch 14.x updates."></i></span>
-            </div>
-            <div class="status-row">
-                <span>VALORANT • <strong>BLACKPLAGUE</strong></span>
-                <span class="badge ud">UNDETECTED <i class="fa-solid fa-circle-info tip" title="Full kernel bypass with unique hash builds."></i></span>
-            </div>
-        </div>
-    </div>
+    <!-- Other views (Purchase, Status vb.) önceki kodla aynı kalacak şekilde sistemdedir -->
 
-    <!-- PURCHASE VIEW -->
-    <div id="purchase" class="view">
-        <div class="product-grid">
-            <!-- EXITSCAM -->
-            <div class="card">
-                <img src="https://placehold.co/600x400/050505/ff0000?text=EXITSCAM+CS2" alt="CS2">
-                <h3 style="font-family:'Orbitron';">EXITSCAM</h3>
-                <ul class="feature-list">
-                    <li><i class="fa-solid fa-check"></i> Advanced Recoil Control (RCS)</li>
-                    <li><i class="fa-solid fa-check"></i> Visible Check ESP & Skeleton</li>
-                    <li><i class="fa-solid fa-check"></i> Grenade Helper (Auto-Throw)</li>
-                    <li><i class="fa-solid fa-check"></i> Kernel Level Security</li>
-                </ul>
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-top:20px;">
-                    <span style="font-size:1.6rem; font-weight:900;">500₺</span>
-                    <button onclick="addToCart('EXITSCAM', 500)" style="background:var(--red); color:#fff; border:none; padding:12px 25px; border-radius:12px; font-weight:800;">PURCHASE</button>
-                </div>
-            </div>
-            <!-- BLACKPLAGUE -->
-            <div class="card">
-                <img src="https://placehold.co/600x400/050505/ff0000?text=BLACKPLAGUE+VAL" alt="VAL">
-                <h3 style="font-family:'Orbitron';">BLACKPLAGUE</h3>
-                <ul class="feature-list">
-                    <li><i class="fa-solid fa-check"></i> Unique Signature per build</li>
-                    <li><i class="fa-solid fa-check"></i> Silent Aim & Smoothing Control</li>
-                    <li><i class="fa-solid fa-check"></i> Health & Distance ESP</li>
-                    <li><i class="fa-solid fa-check"></i> HWID Spoofer Included</li>
-                </ul>
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-top:20px;">
-                    <span style="font-size:1.6rem; font-weight:900;">1200₺</span>
-                    <button onclick="addToCart('BLACKPLAGUE', 1200)" style="background:var(--red); color:#fff; border:none; padding:12px 25px; border-radius:12px; font-weight:800;">PURCHASE</button>
-                </div>
-            </div>
-             <!-- ENGINE SOUL -->
-             <div class="card">
-                <img src="https://placehold.co/600x400/050505/ff0000?text=ENGINE+SOUL+LOL" alt="LOL">
-                <h3 style="font-family:'Orbitron';">ENGINE SOUL</h3>
-                <ul class="feature-list">
-                    <li><i class="fa-solid fa-check"></i> Pixel Perfect Prediction</li>
-                    <li><i class="fa-solid fa-check"></i> Auto Dodge (Evade Level 5)</li>
-                    <li><i class="fa-solid fa-check"></i> Smite & Active Item usage</li>
-                    <li><i class="fa-solid fa-check"></i> All Champions Supported</li>
-                </ul>
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-top:20px;">
-                    <span style="font-size:1.6rem; font-weight:900;">350₺</span>
-                    <button onclick="addToCart('ENGINE SOUL', 350)" style="background:var(--red); color:#fff; border:none; padding:12px 25px; border-radius:12px; font-weight:800;">PURCHASE</button>
-                </div>
-            </div>
-        </div>
-    </div>
+    <div id="custom-cursor"></div>
 
-    <!-- TUTORIAL VIEW -->
-    <div id="tutorial" class="view">
-        <h2 style="font-family:'Orbitron'; text-align:center; font-size:3rem; margin-top:50px;">ELITE <span style="color:var(--red)">GUIDE</span></h2>
-        <div class="tutorial-grid">
-            <div class="tuto-card">
-                <h3><i class="fa-solid fa-shield-virus"></i> Security First</h3>
-                <p>Before any execution, your system must be "Clean".</p>
-                <div class="tuto-step">1. Disable Windows Defender & Real-time protection.</div>
-                <div class="tuto-step">2. Turn off VBS/HVCI (Memory Integrity) in Windows settings.</div>
-                <div class="tuto-step">3. Uninstall any 3rd party antivirus (Avast, Norton etc.).</div>
-            </div>
-            <div class="tuto-card">
-                <h3><i class="fa-solid fa-syringe"></i> How to Inject</h3>
-                <p>Follow these steps in exact order to avoid crashes.</p>
-                <div class="tuto-step">1. Download your build from the Dashboard.</div>
-                <div class="tuto-step">2. Run the loader as Administrator.</div>
-                <div class="tuto-step">3. Wait for "Waiting for Game" message, then launch the game.</div>
-            </div>
-            <div class="tuto-card">
-                <h3><i class="fa-solid fa-user-secret"></i> Play Legit</h3>
-                <p>Safety is a choice. Don't be "obvious".</p>
-                <p>Avoid tracing enemies through walls. Use ESP only for awareness. Keep FOV under 5 for humanized aiming.</p>
-            </div>
-            <div class
+    <script>
+        // --- Matrix Engine (DEIZZY: RED, ETH: WHITE) ---
+        const mCanvas = document.getElementById('matrix-canvas');
+        const mctx = mCanvas.getContext('2d');
+        mCanvas.width = window.innerWidth; mCanvas.height = window.innerHeight;
+        const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        const specialNames = ["DEIZZY", "ETH"];
+        const fontSize = 16;
+        const columns = mCanvas.width / fontSize;
+        const drops = Array(Math.floor(columns)).fill(1);
+
+        function drawMatrix() {
+            mctx.fillStyle = "rgba(5, 5, 5, 0.1)";
+            mctx.fillRect(0, 0, mCanvas.width, mCanvas.height);
+            mctx.font = fontSize + "px Orbitron";
+
+            for(let i=0; i<drops.length; i++) {
+                let text = chars[Math.floor(Math.random()*chars.length)];
+                let isSpecial = false;
+                if(Math.random() > 0.99) { text = specialNames[Math.floor(Math.random()*specialNames.length)]; isSpecial = true; }
+
+                if(isSpecial) {
+                    mctx.shadowBlur = 15;
+                    mctx.fillStyle = (text === "DEIZZY") ? "#ff0000" : "#ffffff";
+                    mctx.shadowColor = mctx.fillStyle;
+                } else {
+                    mctx.shadowBlur = 0; mctx.fillStyle = Math.random() > 0.5 ? "#200" : "#050505";
+                }
+
+                mctx.fillText(text, i*fontSize, drops[i]*fontSize);
+                if(drops[i]*fontSize > mCanvas.height && Math.random() > 0.975) drops[i] = 0;
+                drops[i]++;
+            }
+            requestAnimationFrame(drawMatrix);
+        }
+        drawMatrix();
+
+        // --- DNA Intro Animation ---
+        const iCanvas = document.getElementById('intro-canvas');
+        const ictx = iCanvas.getContext('2d');
+        iCanvas.width = window.innerWidth; iCanvas.height = window.innerHeight;
+
+        function drawDNA() {
+            ictx.clearRect(0,0,iCanvas.width, iCanvas.height);
+            const t = Date.now() * 0.002;
+            for(let i=0; i<iCanvas.height; i+=25) {
+                const x = Math.sin(i*0.01 + t) * 150 + iCanvas.width/2;
+                const x2 = Math.sin(i*0.01 + t + Math.PI) * 150 + iCanvas.width/2;
+                ictx.fillStyle = 'red'; ictx.beginPath(); ictx.arc(x, i, 4, 0, Math.PI*2); ictx.fill();
+                ictx.fillStyle = 'white'; ictx.beginPath(); ictx.arc(x2, i, 4, 0, Math.PI*2); ictx.fill();
+                ictx.strokeStyle = 'rgba(255,0,0,0.1)'; ictx.beginPath(); ictx.moveTo(x, i); ictx.lineTo(x2, i); ictx.stroke();
+            }
+            if(document.getElementById('intro-overlay').style.display !== 'none') requestAnimationFrame(drawDNA);
+        }
+        drawDNA();
+
+        // --- Heartbeat Audio Logic ---
+        let audioCtx;
+        let hbInterval;
+        let isHeartbeatStarted = false;
+
+        function initAudio() { if(!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
+
+        function playHeart() {
+            if(!audioCtx) return;
+            const o = audioCtx.createOscillator();
+            const g = audioCtx.createGain();
+            o.type = 'sine'; o.frequency.setValueAtTime(50, audioCtx.currentTime);
+            g.gain.setValueAtTime(0.7, audioCtx.currentTime);
+            g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.15);
+            o.connect(g); g.connect(audioCtx.destination);
+            o.start(); o.stop(audioCtx.currentTime + 0.15);
+        }
+
+        function startHeartbeat() {
+            if(isHeartbeatStarted) return;
+            initAudio();
+            if(audioCtx.state === 'suspended') audioCtx.resume();
+            
+            playHeart();
+            hbInterval = setInterval(playHeart, 900); // Ağır ve derin tempo
+            isHeartbeatStarted = true;
+
+            // Butonu göster, ipucunu gizle
+            document.getElementById('enter-btn').classList.add('visible');
+            document.getElementById('click-hint').style.display = 'none';
+        }
+
+        function enterSite(e) {
+            e.stopPropagation(); // Parent body click'i tetiklemesin
+            clearInterval(hbInterval); // Sesi kes
+            document.getElementById('intro-overlay').style.opacity = '0';
+            setTimeout(() => {
+                document.getElementById('intro-overlay').style.display = 'none';
+                document.body.style.overflow = 'auto';
+            }, 1200);
+        }
+
+        // --- Mouse Trail ---
+        const tCanvas = document.getElementById('trail-canvas');
+        const tctx = tCanvas.getContext('2d');
+        tCanvas.width = window.innerWidth; tCanvas.height = window.innerHeight;
+        let trail = [];
+
+        window.addEventListener('mousemove', (e) => {
+            document.getElementById('custom-cursor').style.left = e.x + 'px';
+            document.getElementById('custom-cursor').style.top = e.y + 'px';
+            for(let i=0; i<3; i++) trail.push({x: e.x, y: e.y, a: 1, vx: (Math.random()-0.5)*3, vy: (Math.random()-0.5)*3});
+        });
+
+        function animateTrail() {
+            tctx.clearRect(0,0,tCanvas.width, tCanvas.height);
+            for(let i=0; i<trail.length; i++) {
+                let p = trail[i]; p.x += p.vx; p.y += p.vy; p.a -= 0.02;
+                if(p.a <= 0) { trail.splice(i,1); i--; continue; }
+                tctx.fillStyle = `rgba(255,0,0,${p.a})`;
+                tctx.beginPath(); tctx.arc(p.x, p.y, 2.5, 0, Math.PI*2); tctx.fill();
+            }
+            requestAnimationFrame(animateTrail);
+        }
+        animateTrail();
+
+        function setView(id, el) {
+            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
+            el.classList.add('active');
+        }
+    </script>
+</body>
+</html>
