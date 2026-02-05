@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KUWAII.BPM | Feel The Adrenaline</title>
+    <title>KUWAII.TEAM | Adrenaline Elite</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
     
@@ -12,420 +12,242 @@
             --red: #ff0000;
             --red-glow: rgba(255, 0, 0, 0.6);
             --white: #ffffff;
-            --bg-dark: #050505;
-            --card-bg: #111111;
-            --transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            --bg-deep: #050505;
+            --nav-bg: rgba(8, 8, 12, 0.98);
+            --card-bg: rgba(15, 15, 20, 0.9);
+            --transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
-        body { background: var(--bg-dark); color: var(--white); overflow: hidden; /* Locked initially */ }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; cursor: none; }
+        body { background: var(--bg-deep); color: var(--white); overflow: hidden; }
 
-        /* --- INTRO PULSE --- */
+        /* --- BACKGROUND ENGINE --- */
+        #bg-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; }
+
+        /* --- INTRO & HEARTBEAT --- */
         #intro-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: #000; display: flex; justify-content: center; align-items: center;
-            z-index: 9999; transition: opacity 1.5s ease;
+            background: #000; display: flex; flex-direction: column; justify-content: center;
+            align-items: center; z-index: 10000; transition: opacity 1.5s ease;
         }
-        .intro-text {
-            font-family: 'Orbitron', sans-serif; font-size: 3.5rem; font-weight: 900;
-            letter-spacing: 15px; color: #fff; text-transform: uppercase;
-            animation: redWhitePulse 2s infinite alternate;
+        .intro-bpm {
+            font-family: 'Orbitron'; font-size: 5rem; font-weight: 900;
+            color: #fff; text-shadow: 0 0 30px var(--red);
+            animation: pulse 1.2s infinite;
         }
-        @keyframes redWhitePulse {
-            0% { text-shadow: 0 0 10px #fff, 0 0 20px var(--red); color: #fff; transform: scale(0.98); }
-            100% { text-shadow: 0 0 30px var(--red), 0 0 60px var(--red); color: var(--red); transform: scale(1.05); }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.8; }
+            15% { transform: scale(1.15); opacity: 1; text-shadow: 0 0 50px var(--red); }
         }
+        .click-text { margin-top: 30px; letter-spacing: 5px; color: var(--red); font-weight: 800; animation: blink 1s infinite; }
+        @keyframes blink { 50% { opacity: 0.2; } }
 
-        /* --- NAVBAR & UI --- */
+        /* --- NAVIGATION --- */
         nav {
-            position: fixed; top: 0; width: 100%; padding: 20px 5%;
-            display: flex; justify-content: space-between; align-items: center;
-            z-index: 100; background: linear-gradient(to bottom, rgba(0,0,0,0.8), transparent);
+            position: fixed; top: 0; width: 100%; height: 80px;
+            background: var(--nav-bg); display: flex; align-items: center;
+            justify-content: space-between; padding: 0 5%; z-index: 1000;
+            border-bottom: 1px solid rgba(255, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
         }
-        .logo { font-family: 'Orbitron'; font-weight: 900; font-size: 1.5rem; color: var(--red); text-shadow: 0 0 10px var(--red); }
-        .nav-right { display: flex; gap: 20px; align-items: center; }
+        .nav-logo { font-family: 'Orbitron'; font-weight: 900; color: #fff; font-size: 1.8rem; }
+        .nav-logo span { color: var(--red); }
         
-        select {
-            background: transparent; color: white; border: 1px solid var(--red);
-            padding: 5px 10px; border-radius: 5px; cursor: pointer;
+        .nav-links { display: flex; gap: 30px; list-style: none; }
+        .nav-links a { 
+            text-decoration: none; color: #777; font-size: 0.8rem; font-weight: 700;
+            text-transform: uppercase; transition: 0.3s; display: flex; align-items: center; gap: 8px;
         }
+        .nav-links a:hover, .nav-links a.active { color: #fff; text-shadow: 0 0 10px var(--red); }
+        .nav-links a.active { border-bottom: 2px solid var(--red); padding-bottom: 5px; }
 
-        .cart-trigger { position: relative; cursor: pointer; font-size: 1.2rem; transition: 0.3s; }
-        .cart-trigger:hover { color: var(--red); text-shadow: 0 0 10px var(--red); }
-        #cart-count { position: absolute; -10px; right: -10px; background: var(--red); font-size: 0.7rem; padding: 2px 6px; border-radius: 50%; }
+        .nav-right { display: flex; gap: 15px; }
+        .btn-dash { background: linear-gradient(90deg, #ff0044, var(--red)); padding: 10px 25px; border-radius: 50px; color: #fff; text-decoration: none; font-weight: 800; font-size: 0.75rem; box-shadow: 0 0 20px rgba(255,0,0,0.3); }
+        .btn-sup { border: 1px solid var(--red); padding: 10px 25px; border-radius: 50px; color: #fff; text-decoration: none; font-weight: 800; font-size: 0.75rem; transition: 0.3s; }
+        .btn-sup:hover { background: var(--red); box-shadow: 0 0 20px var(--red); }
 
         /* --- HERO --- */
-        .hero {
-            height: 100vh; display: flex; flex-direction: column; justify-content: center;
-            align-items: center; text-align: center;
+        .view { display: none; padding-top: 100px; min-height: 100vh; position: relative; }
+        .view.active { display: block; animation: viewFade 1s ease; }
+        @keyframes viewFade { from { opacity: 0; transform: scale(1.02); } }
+
+        .hero { height: calc(100vh - 80px); display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
+        #falling-team {
+            font-family: 'Orbitron'; font-size: 7rem; font-weight: 900;
+            color: #fff; text-shadow: 0 0 40px var(--red);
+            transform: translateY(-200vh); transition: transform 2.5s cubic-bezier(0.05, 1, 0.2, 1);
         }
-        .hero h1 { font-family: 'Orbitron'; font-size: 5rem; margin-bottom: 10px; }
-        .hero p { font-size: 1.5rem; font-weight: 600; letter-spacing: 1px; }
-        .adrenaline { color: var(--red); text-shadow: 0 0 15px var(--red); animation: flicker 3s infinite; }
+        .slogan { font-size: 1.8rem; margin-top: 20px; opacity: 0; transition: 1s; font-weight: 300; }
+        .slogan .adrenaline { color: var(--red); font-weight: 900; text-shadow: 0 0 15px var(--red); }
 
-        @keyframes flicker { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
+        /* --- STATUS TABLE --- */
+        .status-box { max-width: 1000px; margin: 40px auto; background: var(--card-bg); border-radius: 25px; border: 1px solid #222; overflow: hidden; }
+        .status-row { display: flex; justify-content: space-between; padding: 25px 40px; border-bottom: 1px solid #111; align-items: center; }
+        .badge { padding: 8px 20px; border-radius: 8px; font-weight: 800; font-size: 0.7rem; border: 1px solid transparent; letter-spacing: 1px; }
+        .ud { color: #00ff00; background: rgba(0,255,0,0.05); border-color: #00ff00; }
+        .it { color: #ffff00; background: rgba(255,255,0,0.05); border-color: #ffff00; }
+        .tip { color: var(--red); cursor: help; margin-left: 10px; font-size: 0.9rem; }
 
-        .btn-main {
-            margin-top: 40px; padding: 15px 50px; background: var(--red);
-            color: white; border: none; border-radius: 50px; font-weight: 800;
-            cursor: pointer; transition: var(--transition); text-transform: uppercase;
-            box-shadow: 0 0 20px var(--red-glow);
-        }
-        .btn-main:hover { transform: scale(1.1) translateY(-5px); box-shadow: 0 0 40px var(--red); }
+        /* --- PRODUCT CARDS --- */
+        .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)); gap: 40px; padding: 50px 8%; }
+        .card { background: var(--card-bg); border: 1px solid #222; border-radius: 30px; padding: 35px; transition: var(--transition); position: relative; }
+        .card:hover { transform: translateY(-15px); border-color: var(--red); box-shadow: 0 20px 50px rgba(255,0,0,0.15); }
+        .card img { width: 100%; border-radius: 20px; margin-bottom: 25px; border: 1px solid #333; filter: brightness(0.7); transition: 0.5s; }
+        .card:hover img { filter: brightness(1.1); }
+        .feature-list { list-style: none; margin: 15px 0; color: #888; font-size: 0.85rem; }
+        .feature-list li { margin-bottom: 8px; display: flex; align-items: center; gap: 10px; }
+        .feature-list i { color: var(--red); font-size: 0.7rem; }
 
-        /* --- STATUS SECTION --- */
-        .status-section { padding: 100px 10%; background: #080808; }
-        .status-table { width: 100%; border-collapse: collapse; margin-top: 30px; }
-        .status-table th, .status-table td { padding: 20px; text-align: left; border-bottom: 1px solid #222; }
-        .status-badge { padding: 5px 15px; border-radius: 5px; font-weight: 800; font-size: 0.8rem; display: flex; align-items: center; gap: 10px; }
-        .ud { background: rgba(34, 197, 94, 0.1); color: #22c55e; }
-        .it { background: rgba(234, 179, 8, 0.1); color: #eab308; }
+        /* --- TUTORIAL SECTION --- */
+        .tutorial-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; max-width: 1100px; margin: 0 auto; padding: 40px; }
+        .tuto-card { background: #0a0a0f; border: 1px solid #222; border-radius: 20px; padding: 30px; }
+        .tuto-card h3 { color: var(--red); font-family: 'Orbitron'; margin-bottom: 15px; display: flex; align-items: center; gap: 15px; }
+        .tuto-card p { color: #888; line-height: 1.6; font-size: 0.9rem; }
+        .tuto-step { background: rgba(255,255,255,0.02); padding: 15px; border-radius: 12px; margin-top: 15px; border-left: 3px solid var(--red); }
 
-        /* Tooltip */
-        .tooltip { position: relative; cursor: help; color: var(--red); }
-        .tooltip:hover::after {
-            content: attr(data-tip); position: absolute; bottom: 150%; left: 50%;
-            transform: translateX(-50%); background: var(--red); color: white;
-            padding: 10px; border-radius: 8px; font-size: 0.8rem; width: 150px; z-index: 10;
-        }
+        /* --- OWNERS --- */
+        .owner-wrap { display: flex; justify-content: center; gap: 80px; padding: 80px; }
+        .owner-card { text-align: center; }
+        .owner-card h4 { font-family: 'Orbitron'; font-size: 1.5rem; color: #fff; margin-bottom: 5px; }
+        .owner-card span { color: var(--red); font-weight: 800; font-size: 0.8rem; letter-spacing: 2px; }
 
-        /* --- PRODUCTS --- */
-        .products-section { padding: 100px 5%; min-height: 100vh; }
-        .tabs { display: flex; justify-content: center; gap: 20px; margin-bottom: 50px; }
-        .tab-btn {
-            background: transparent; border: 1px solid var(--red); color: white;
-            padding: 10px 30px; border-radius: 5px; cursor: pointer; transition: 0.3s;
-        }
-        .tab-btn.active, .tab-btn:hover { background: var(--red); box-shadow: 0 0 15px var(--red); }
+        /* --- CART PANEL --- */
+        #cart-panel { position: fixed; right: -450px; top: 0; width: 450px; height: 100vh; background: #07070a; border-left: 2px solid var(--red); z-index: 2000; padding: 40px; transition: 0.5s ease; display: flex; flex-direction: column; }
+        #cart-panel.active { right: 0; }
+        .cart-header { font-family: 'Orbitron'; font-size: 1.8rem; color: var(--red); margin-bottom: 40px; }
+        .btn-pay { background: var(--red); color: #fff; border: none; padding: 20px; border-radius: 15px; font-weight: 900; cursor: pointer; margin-top: auto; font-size: 1.1rem; box-shadow: 0 0 30px rgba(255,0,0,0.3); }
 
-        .price-filter { text-align: center; margin-bottom: 40px; }
-        #priceRange { width: 300px; accent-color: var(--red); }
-
-        .product-grid {
-            display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-            gap: 30px; opacity: 0; transform: translateY(100px); transition: 1s ease;
-        }
-        .product-grid.show { opacity: 1; transform: translateY(0); }
-
-        .card {
-            background: var(--card-bg); border: 1px solid #222; border-radius: 20px;
-            padding: 25px; transition: var(--transition); border-bottom: 4px solid transparent;
-        }
-        .card:hover { transform: translateY(-15px); border-color: var(--red); box-shadow: 0 10px 30px rgba(255,0,0,0.2); border-bottom: 4px solid var(--red); }
-        
-        .card img { width: 100%; height: 180px; object-fit: cover; border-radius: 15px; margin-bottom: 20px; border: 1px solid #333; }
-        .card h3 { font-family: 'Orbitron'; margin-bottom: 10px; color: var(--red); }
-        .card p { color: #888; font-size: 0.9rem; height: 60px; }
-
-        /* --- CART SIDEBAR --- */
-        #cart-sidebar {
-            position: fixed; right: -400px; top: 0; width: 400px; height: 100vh;
-            background: #0a0a0a; z-index: 1000; transition: 0.5s ease;
-            padding: 40px; border-left: 2px solid var(--red);
-        }
-        #cart-sidebar.active { right: 0; }
-        .cart-item { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid #222; padding-bottom: 10px; }
-        
-        /* Animation for cards falling */
-        .card.drop { animation: dropDown 0.8s backwards; }
-        @keyframes dropDown {
-            from { opacity: 0; transform: translateY(-100px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
+        .discord-btn { position: fixed; bottom: 30px; right: 30px; background: #5865F2; color: #fff; width: 65px; height: 65px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; text-decoration: none; box-shadow: 0 0 30px rgba(88,101,242,0.4); z-index: 999; transition: 0.4s; }
+        .discord-btn:hover { background: var(--red); transform: scale(1.1) rotate(15deg); box-shadow: 0 0 40px var(--red); }
     </style>
 </head>
 <body>
 
-    <!-- Intro Overlay -->
-    <div id="intro-overlay">
-        <div class="intro-text">KUWAII.BPM</div>
+    <canvas id="bg-canvas"></canvas>
+
+    <div id="intro-overlay" onclick="startExperience()">
+        <div class="intro-bpm">KUWAII.BPM</div>
+        <div class="click-text">CLICK TO INITIALIZE ADRENALINE</div>
     </div>
 
     <nav>
-        <div class="logo">KUWAII.BPM</div>
+        <div class="nav-logo">KUWAII<span>.TEAM</span></div>
+        <ul class="nav-links">
+            <li><a href="#" class="active" onclick="setView('home', this)"><i class="fa-solid fa-house"></i> HOME</a></li>
+            <li><a href="#" onclick="setView('status', this)"><i class="fa-solid fa-bolt"></i> STATUS</a></li>
+            <li><a href="#" onclick="setView('purchase', this)"><i class="fa-solid fa-shopping-bag"></i> PURCHASE</a></li>
+            <li><a href="#" onclick="setView('tutorial', this)"><i class="fa-solid fa-book"></i> TUTORIAL</a></li>
+            <li><a href="#"><i class="fa-solid fa-download"></i> DOWNLOADS</a></li>
+        </ul>
         <div class="nav-right">
-            <select id="langSelect" onchange="changeLanguage()">
-                <option value="en">English</option>
-                <option value="tr">Türkçe</option>
-                <option value="de">Deutsch</option>
-                <option value="cn">中文</option>
-                <option value="ru">Русский</option>
-                <option value="ro">Română</option>
-            </select>
-            <div class="cart-trigger" onclick="toggleCart()">
-                <i class="fa-solid fa-cart-shopping"></i>
-                <span id="cart-count">0</span>
-            </div>
+            <a href="https://discord.gg/ufYTRUY2PH" class="btn-sup">SUPPORT</a>
+            <a href="#" class="btn-dash">DASHBOARD</a>
         </div>
     </nav>
 
-    <div id="main-wrapper">
+    <!-- HOME VIEW -->
+    <div id="home" class="view active">
         <section class="hero">
-            <h1 id="hero-title">KUWAII.BPM</h1>
-            <p id="hero-slogan">Feel the <span class="adrenaline">adrenaline</span>, own the game</p>
-            <button class="btn-main" id="btn-see" onclick="unlockSite()">See Products</button>
-        </section>
-
-        <section class="status-section">
-            <h2 id="status-h2" style="font-family:'Orbitron'; text-align:center;">SYSTEM STATUS</h2>
-            <table class="status-table">
-                <thead>
-                    <tr><th id="th-game">Game / Software</th><th id="th-status">Status</th></tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>CS2 - <span style="color:var(--red)">EXITSCAM</span></td>
-                        <td><span class="status-badge ud">UNDETECTED <i class="fa-solid fa-circle-question tooltip" data-tip="Rage playing may cause VACLive."></i></span></td>
-                    </tr>
-                    <tr>
-                        <td>LoL - <span style="color:var(--red)">ENGINE SOUL</span></td>
-                        <td><span class="status-badge it">IN TEST <i class="fa-solid fa-circle-question tooltip" data-tip="Play legit during tests."></i></span></td>
-                    </tr>
-                    <tr>
-                        <td>Valorant - <span style="color:var(--red)">BLACKPLAGUE</span></td>
-                        <td><span class="status-badge ud">UNDETECTED <i class="fa-solid fa-circle-question tooltip" data-tip="Internal build, HWID Spoofer recommended."></i></span></td>
-                    </tr>
-                </tbody>
-            </table>
-        </section>
-
-        <section class="products-section" id="products">
-            <div class="tabs">
-                <button class="tab-btn active" onclick="filterCat('all', this)">ALL</button>
-                <button class="tab-btn" onclick="filterCat('cs', this)">CS2</button>
-                <button class="tab-btn" onclick="filterCat('valorant', this)">VALORANT</button>
-                <button class="tab-btn" onclick="filterCat('lol', this)">LoL</button>
-            </div>
-
-            <div class="price-filter">
-                <span id="label-price">Max Price</span>: <span id="priceValue">2000</span>₺
-                <br>
-                <input type="range" id="priceRange" min="0" max="2000" value="2000" oninput="updatePriceFilter()">
-            </div>
-
-            <div class="product-grid" id="productGrid">
-                <!-- JS Generated -->
+            <h1 id="falling-team">KUWAII.TEAM</h1>
+            <p class="slogan" id="slogan">Feel the <span class="adrenaline">adrenaline</span>, own the game</p>
+            <div class="owner-wrap">
+                <div class="owner-card"><h4>ETH</h4><span>CORE DEVELOPER</span></div>
+                <div class="owner-card"><h4>DEIZZY</h4><span>OPERATIONS</span></div>
             </div>
         </section>
     </div>
 
-    <!-- Cart Sidebar -->
-    <div id="cart-sidebar">
-        <h2 id="cart-h2" style="font-family:'Orbitron'; margin-bottom:30px;">YOUR CART</h2>
-        <div id="cart-items"></div>
-        <div style="margin-top:30px; border-top:1px solid #333; padding-top:20px;">
-            <h3 id="cart-total-label">Total: <span id="total-price" style="color:var(--red)">0</span>₺</h3>
-            <button class="btn-main" style="width:100%" onclick="checkout()">CHECKOUT (DISCORD)</button>
+    <!-- STATUS VIEW -->
+    <div id="status" class="view">
+        <h2 style="font-family:'Orbitron'; text-align:center; font-size:3rem; margin-top:50px;">LIVE <span style="color:var(--red)">STATUS</span></h2>
+        <div class="status-box">
+            <div class="status-row">
+                <span>CS2 • <strong>EXITSCAM</strong></span>
+                <span class="badge ud">UNDETECTED <i class="fa-solid fa-circle-info tip" title="Rage playing may cause VacLive detections."></i></span>
+            </div>
+            <div class="status-row">
+                <span>LOL • <strong>ENGINE SOUL</strong></span>
+                <span class="badge it">IN TEST <i class="fa-solid fa-circle-info tip" title="Safe for smurfs, monitoring patch 14.x updates."></i></span>
+            </div>
+            <div class="status-row">
+                <span>VALORANT • <strong>BLACKPLAGUE</strong></span>
+                <span class="badge ud">UNDETECTED <i class="fa-solid fa-circle-info tip" title="Full kernel bypass with unique hash builds."></i></span>
+            </div>
         </div>
-        <button onclick="toggleCart()" style="margin-top:20px; background:none; border:none; color:white; cursor:pointer;"><i class="fa-solid fa-arrow-left"></i> Close</button>
     </div>
 
-    <script>
-        const translations = {
-            en: {
-                slogan: "Feel the <span class='adrenaline'>adrenaline</span>, own the game",
-                see: "See Products",
-                statusH: "SYSTEM STATUS",
-                game: "Game / Software",
-                stat: "Status",
-                maxP: "Max Price",
-                cartH: "YOUR CART",
-                total: "Total",
-                add: "ADD TO CART"
-            },
-            tr: {
-                slogan: "<span class='adrenaline'>Adrenalini</span> hisset, oyuna hükmet",
-                see: "Ürünleri Gör",
-                statusH: "SİSTEM DURUMU",
-                game: "Oyun / Yazılım",
-                stat: "Durum",
-                maxP: "Maks. Fiyat",
-                cartH: "SEPETİNİZ",
-                total: "Toplam",
-                add: "SEPETE EKLE"
-            },
-            de: {
-                slogan: "Spüre das <span class='adrenaline'>Adrenalin</span>, beherrschen das Spiel",
-                see: "Produkte ansehen",
-                statusH: "SYSTEMSTATUS",
-                game: "Spiel / Software",
-                stat: "Status",
-                maxP: "Maximalpreis",
-                cartH: "IHR WARENKORB",
-                total: "Gesamt",
-                add: "IN DEN WARENKORB"
-            },
-            cn: {
-                slogan: "感受 <span class='adrenaline'>肾上腺素</span>，掌控比赛",
-                see: "查看产品",
-                statusH: "系统状态",
-                game: "游戏/软件",
-                stat: "状态",
-                maxP: "最高价格",
-                cartH: "您的购物车",
-                total: "总计",
-                add: "添加到购物车"
-            },
-            ru: {
-                slogan: "Почувствуй <span class='adrenaline'>адреналин</span>, владей игрой",
-                see: "Посмотреть продукты",
-                statusH: "СТАТУС СИСТЕМЫ",
-                game: "Игра / ПО",
-                stat: "Статус",
-                maxP: "Макс. цена",
-                cartH: "ВАША КОРЗИНА",
-                total: "Итого",
-                add: "В КОРЗИНУ"
-            },
-            ro: {
-                slogan: "Simte <span class='adrenaline'>adrenalina</span>, stăpânește jocul",
-                see: "Vezi Produsele",
-                statusH: "STATUS SISTEM",
-                game: "Joc / Software",
-                stat: "Status",
-                maxP: "Preț maxim",
-                cartH: "COȘUL TĂU",
-                total: "Total",
-                add: "ADAUGĂ ÎN COȘ"
-            }
-        };
+    <!-- PURCHASE VIEW -->
+    <div id="purchase" class="view">
+        <div class="product-grid">
+            <!-- EXITSCAM -->
+            <div class="card">
+                <img src="https://placehold.co/600x400/050505/ff0000?text=EXITSCAM+CS2" alt="CS2">
+                <h3 style="font-family:'Orbitron';">EXITSCAM</h3>
+                <ul class="feature-list">
+                    <li><i class="fa-solid fa-check"></i> Advanced Recoil Control (RCS)</li>
+                    <li><i class="fa-solid fa-check"></i> Visible Check ESP & Skeleton</li>
+                    <li><i class="fa-solid fa-check"></i> Grenade Helper (Auto-Throw)</li>
+                    <li><i class="fa-solid fa-check"></i> Kernel Level Security</li>
+                </ul>
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-top:20px;">
+                    <span style="font-size:1.6rem; font-weight:900;">500₺</span>
+                    <button onclick="addToCart('EXITSCAM', 500)" style="background:var(--red); color:#fff; border:none; padding:12px 25px; border-radius:12px; font-weight:800;">PURCHASE</button>
+                </div>
+            </div>
+            <!-- BLACKPLAGUE -->
+            <div class="card">
+                <img src="https://placehold.co/600x400/050505/ff0000?text=BLACKPLAGUE+VAL" alt="VAL">
+                <h3 style="font-family:'Orbitron';">BLACKPLAGUE</h3>
+                <ul class="feature-list">
+                    <li><i class="fa-solid fa-check"></i> Unique Signature per build</li>
+                    <li><i class="fa-solid fa-check"></i> Silent Aim & Smoothing Control</li>
+                    <li><i class="fa-solid fa-check"></i> Health & Distance ESP</li>
+                    <li><i class="fa-solid fa-check"></i> HWID Spoofer Included</li>
+                </ul>
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-top:20px;">
+                    <span style="font-size:1.6rem; font-weight:900;">1200₺</span>
+                    <button onclick="addToCart('BLACKPLAGUE', 1200)" style="background:var(--red); color:#fff; border:none; padding:12px 25px; border-radius:12px; font-weight:800;">PURCHASE</button>
+                </div>
+            </div>
+             <!-- ENGINE SOUL -->
+             <div class="card">
+                <img src="https://placehold.co/600x400/050505/ff0000?text=ENGINE+SOUL+LOL" alt="LOL">
+                <h3 style="font-family:'Orbitron';">ENGINE SOUL</h3>
+                <ul class="feature-list">
+                    <li><i class="fa-solid fa-check"></i> Pixel Perfect Prediction</li>
+                    <li><i class="fa-solid fa-check"></i> Auto Dodge (Evade Level 5)</li>
+                    <li><i class="fa-solid fa-check"></i> Smite & Active Item usage</li>
+                    <li><i class="fa-solid fa-check"></i> All Champions Supported</li>
+                </ul>
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-top:20px;">
+                    <span style="font-size:1.6rem; font-weight:900;">350₺</span>
+                    <button onclick="addToCart('ENGINE SOUL', 350)" style="background:var(--red); color:#fff; border:none; padding:12px 25px; border-radius:12px; font-weight:800;">PURCHASE</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
-        const products = [
-            { id: 1, name: "EXITSCAM", cat: "cs", price: 500, desc: "Premium CS2 Legit & Rage. Highly optimized.", img: "https://placehold.co/600x400/111/ff0000?text=EXITSCAM" },
-            { id: 2, name: "BLACKPLAGUE", cat: "valorant", price: 1200, desc: "Internal Valorant hack. High security kernel driver.", img: "https://placehold.co/600x400/111/ff0000?text=BLACKPLAGUE" },
-            { id: 3, name: "ENGINE SOUL", cat: "lol", price: 300, desc: "Advanced script for LoL. Prediction & Evade.", img: "https://placehold.co/600x400/111/ff0000?text=ENGINE+SOUL" },
-            { id: 4, name: "VALORANT ESP", cat: "valorant", price: 750, desc: "External ESP only. Stream proof.", img: "https://placehold.co/600x400/111/ff0000?text=VAL+ESP" }
-        ];
-
-        let cart = [];
-        let currentLang = 'en';
-
-        // Intro
-        window.addEventListener('DOMContentLoaded', () => {
-            setTimeout(() => {
-                document.getElementById('intro-overlay').style.opacity = '0';
-                setTimeout(() => { document.getElementById('intro-overlay').style.display = 'none'; }, 1500);
-            }, 3000);
-            renderProducts('all');
-        });
-
-        function unlockSite() {
-            document.body.style.overflow = 'auto';
-            document.getElementById('products').scrollIntoView({ behavior: 'smooth' });
-            document.getElementById('productGrid').classList.add('show');
-            
-            // Stagger animation
-            const cards = document.querySelectorAll('.card');
-            cards.forEach((card, index) => {
-                card.classList.add('drop');
-                card.style.animationDelay = `${index * 0.15}s`;
-            });
-        }
-
-        function changeLanguage() {
-            currentLang = document.getElementById('langSelect').value;
-            const t = translations[currentLang];
-            document.getElementById('hero-slogan').innerHTML = t.slogan;
-            document.getElementById('btn-see').innerText = t.see;
-            document.getElementById('status-h2').innerText = t.statusH;
-            document.getElementById('th-game').innerText = t.game;
-            document.getElementById('th-status').innerText = t.stat;
-            document.getElementById('label-price').innerText = t.maxP;
-            document.getElementById('cart-h2').innerText = t.cartH;
-            document.getElementById('cart-total-label').innerHTML = `${t.total}: <span id="total-price" style="color:var(--red)">0</span>₺`;
-            renderProducts(currentCategory);
-        }
-
-        let currentCategory = 'all';
-        function filterCat(cat, btn) {
-            currentCategory = cat;
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            renderProducts(cat);
-        }
-
-        function updatePriceFilter() {
-            const val = document.getElementById('priceRange').value;
-            document.getElementById('priceValue').innerText = val;
-            renderProducts(currentCategory);
-        }
-
-        function renderProducts(cat) {
-            const grid = document.getElementById('productGrid');
-            const maxP = document.getElementById('priceRange').value;
-            grid.innerHTML = '';
-            
-            const filtered = products.filter(p => (cat === 'all' || p.cat === cat) && p.price <= maxP);
-            
-            filtered.forEach(p => {
-                grid.innerHTML += `
-                    <div class="card">
-                        <img src="${p.img}" alt="${p.name}">
-                        <h3>${p.name}</h3>
-                        <p>${p.desc}</p>
-                        <div style="display:flex; justify-content:space-between; align-items:center; margin-top:15px;">
-                            <span style="font-weight:800; font-size:1.2rem;">${p.price}₺</span>
-                            <button class="btn-main" style="padding:8px 15px; font-size:0.7rem;" onclick="addToCart(${p.id})">${translations[currentLang].add}</button>
-                        </div>
-                    </div>
-                `;
-            });
-        }
-
-        function toggleCart() {
-            document.getElementById('cart-sidebar').classList.toggle('active');
-        }
-
-        function addToCart(id) {
-            const prod = products.find(p => p.id === id);
-            const exist = cart.find(c => c.id === id);
-            if(exist) exist.qty++;
-            else cart.push({...prod, qty: 1});
-            updateCart();
-        }
-
-        function updateCart() {
-            const container = document.getElementById('cart-items');
-            const count = document.getElementById('cart-count');
-            const totalDisplay = document.getElementById('total-price');
-            container.innerHTML = '';
-            
-            let total = 0;
-            let itemsNum = 0;
-
-            cart.forEach(c => {
-                total += (c.price * c.qty);
-                itemsNum += c.qty;
-                container.innerHTML += `
-                    <div class="cart-item">
-                        <div>
-                            <h4>${c.name}</h4>
-                            <span>${c.price}₺ x ${c.qty}</span>
-                        </div>
-                        <div style="display:flex; gap:10px;">
-                            <button onclick="changeQty(${c.id}, 1)" style="color:white; background:none; border:1px solid #333; padding:2px 8px;">+</button>
-                            <button onclick="changeQty(${c.id}, -1)" style="color:white; background:none; border:1px solid #333; padding:2px 8px;">-</button>
-                        </div>
-                    </div>
-                `;
-            });
-
-            count.innerText = itemsNum;
-            totalDisplay.innerText = total;
-        }
-
-        function changeQty(id, delta) {
-            const item = cart.find(c => c.id === id);
-            item.qty += delta;
-            if(item.qty <= 0) cart = cart.filter(c => c.id !== id);
-            updateCart();
-        }
-
-        function checkout() {
-            if(cart.length === 0) return alert("Empty cart!");
-            window.location.href = "https://discord.gg/ufYTRUY2PH";
-        }
-    </script>
-</body>
-</html>
+    <!-- TUTORIAL VIEW -->
+    <div id="tutorial" class="view">
+        <h2 style="font-family:'Orbitron'; text-align:center; font-size:3rem; margin-top:50px;">ELITE <span style="color:var(--red)">GUIDE</span></h2>
+        <div class="tutorial-grid">
+            <div class="tuto-card">
+                <h3><i class="fa-solid fa-shield-virus"></i> Security First</h3>
+                <p>Before any execution, your system must be "Clean".</p>
+                <div class="tuto-step">1. Disable Windows Defender & Real-time protection.</div>
+                <div class="tuto-step">2. Turn off VBS/HVCI (Memory Integrity) in Windows settings.</div>
+                <div class="tuto-step">3. Uninstall any 3rd party antivirus (Avast, Norton etc.).</div>
+            </div>
+            <div class="tuto-card">
+                <h3><i class="fa-solid fa-syringe"></i> How to Inject</h3>
+                <p>Follow these steps in exact order to avoid crashes.</p>
+                <div class="tuto-step">1. Download your build from the Dashboard.</div>
+                <div class="tuto-step">2. Run the loader as Administrator.</div>
+                <div class="tuto-step">3. Wait for "Waiting for Game" message, then launch the game.</div>
+            </div>
+            <div class="tuto-card">
+                <h3><i class="fa-solid fa-user-secret"></i> Play Legit</h3>
+                <p>Safety is a choice. Don't be "obvious".</p>
+                <p>Avoid tracing enemies through walls. Use ESP only for awareness. Keep FOV under 5 for humanized aiming.</p>
+            </div>
+            <div class
