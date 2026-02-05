@@ -3,244 +3,252 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Resell Store</title>
+    <title>NEXUS - Premium Software Store</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <style>
-        /* --- Temel Ayarlar --- */
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        /* --- CSS BAŞLANGICI --- */
+        :root {
+            --bg-color: #09090b;
+            --card-bg: #121214;
+            --primary: #8b5cf6; /* Mor */
+            --accent: #10b981;  /* Yeşil */
+            --text-main: #ffffff;
+            --text-muted: #a1a1aa;
+            --border: #27272a;
         }
 
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', system-ui, sans-serif; }
+
         body {
-            background-color: #0a0a0a;
-            color: #ffffff;
+            background-color: var(--bg-color);
+            color: var(--text-main);
             display: flex;
             flex-direction: column;
             align-items: center;
             min-height: 100vh;
         }
 
-        /* --- Header --- */
+        /* Navbar & Header */
         header {
-            text-align: center;
-            padding: 40px 20px;
             width: 100%;
-            border-bottom: 1px solid #222;
-            background: linear-gradient(180deg, #111 0%, #0a0a0a 100%);
+            padding: 40px 20px;
+            text-align: center;
+            background: radial-gradient(circle at top, #1e1b4b 0%, var(--bg-color) 70%);
+            border-bottom: 1px solid var(--border);
         }
 
-        h1 {
-            font-size: 2.5rem;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            background: -webkit-linear-gradient(#fff, #888);
+        .logo {
+            font-size: 3rem;
+            font-weight: 900;
+            letter-spacing: -2px;
+            background: linear-gradient(to right, #fff, var(--primary));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
         }
 
-        p.subtitle {
-            color: #666;
-            margin-top: 10px;
-            font-size: 0.9rem;
-        }
+        .subtitle { color: var(--text-muted); font-size: 1rem; }
 
-        /* --- Tabs (Sekmeler) --- */
-        .tabs-container {
-            margin: 30px 0;
+        /* Tabs (Sekmeler) */
+        .filter-container {
             display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
             justify-content: center;
+            gap: 15px;
+            margin: 40px 0;
+            flex-wrap: wrap;
         }
 
-        .tab-btn {
-            background-color: #1a1a1a;
-            border: 1px solid #333;
-            color: #aaa;
-            padding: 10px 25px;
+        .filter-btn {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            padding: 10px 24px;
+            border-radius: 50px;
             cursor: pointer;
-            border-radius: 4px;
             font-weight: 600;
-            transition: all 0.3s ease;
-            text-transform: uppercase;
-            font-size: 0.85rem;
+            transition: 0.3s ease;
         }
 
-        .tab-btn:hover, .tab-btn.active {
-            background-color: #6d28d9; /* Mor vurgu rengi */
-            color: #fff;
-            border-color: #6d28d9;
-            box-shadow: 0 0 15px rgba(109, 40, 217, 0.4);
+        .filter-btn:hover, .filter-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+            box-shadow: 0 0 20px rgba(139, 92, 246, 0.4);
         }
 
-        /* --- Ürün Grid --- */
-        .products-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 20px;
-            width: 90%;
+        /* Grid Alanı */
+        .container {
             max-width: 1200px;
+            width: 90%;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
             padding-bottom: 50px;
         }
 
-        .product-card {
-            background-color: #111;
-            border: 1px solid #222;
-            border-radius: 8px;
+        /* Ürün Kartı */
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 16px;
             overflow: hidden;
-            transition: transform 0.3s ease, border-color 0.3s ease;
-            display: none; /* Varsayılan olarak gizli, JS ile açılacak */
-            animation: fadeIn 0.5s;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            display: none; /* JS ile açılacak */
+            animation: fadeUp 0.5s ease forwards;
         }
 
-        /* Aktif kategoriye sahip kartları göster */
-        .product-card.show {
-            display: block;
-        }
+        .card.show { display: block; }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        .product-card:hover {
+        .card:hover {
             transform: translateY(-5px);
-            border-color: #6d28d9;
+            border-color: var(--primary);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
 
-        .image-placeholder {
+        .card-img {
             width: 100%;
-            height: 160px;
-            background-color: #1a1a1a;
+            height: 180px;
+            object-fit: cover;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .card-body { padding: 20px; }
+
+        .tags {
             display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #444;
-            font-size: 0.8rem;
-            position: relative;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .tag {
+            font-size: 0.75rem;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-weight: 700;
+            text-transform: uppercase;
         }
         
-        /* Gerçek resim kullanacağın zaman burayı aktif et */
-        .product-img {
-            width: 100%;
-            height: 160px;
-            object-fit: cover;
-            display: block;
-        }
+        .tag.safe { background: rgba(16, 185, 129, 0.2); color: var(--accent); }
+        .tag.risk { background: rgba(239, 68, 68, 0.2); color: #ef4444; }
+        .tag.update { background: rgba(245, 158, 11, 0.2); color: #f59e0b; }
 
-        .card-info {
-            padding: 15px;
-        }
+        .card-title { font-size: 1.25rem; font-weight: 700; margin-bottom: 8px; }
+        .card-desc { color: var(--text-muted); font-size: 0.9rem; line-height: 1.5; margin-bottom: 20px; }
 
-        .card-title {
-            font-size: 1.1rem;
-            margin-bottom: 5px;
-            font-weight: 700;
-        }
-
-        .status {
-            font-size: 0.75rem;
-            padding: 2px 6px;
-            border-radius: 3px;
-            margin-bottom: 10px;
-            display: inline-block;
-        }
-
-        .status.active { background-color: #064e3b; color: #34d399; border: 1px solid #065f46; }
-        .status.update { background-color: #451a03; color: #fbbf24; border: 1px solid #78350f; }
-
-        .price-row {
+        .card-footer {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-top: 15px;
+            border-top: 1px solid var(--border);
+            padding-top: 15px;
         }
 
-        .price {
-            font-size: 1.2rem;
-            font-weight: bold;
-            color: #fff;
-        }
-
-        .buy-btn {
-            background-color: #fff;
-            color: #000;
+        .price { font-size: 1.2rem; font-weight: 700; color: #fff; }
+        
+        .btn-buy {
+            background: white;
+            color: black;
             text-decoration: none;
             padding: 8px 16px;
-            border-radius: 4px;
+            border-radius: 8px;
+            font-weight: 700;
             font-size: 0.9rem;
-            font-weight: bold;
-            transition: background 0.2s;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 5px;
         }
 
-        .buy-btn:hover {
-            background-color: #ccc;
-        }
+        .btn-buy:hover { background: var(--primary); color: white; }
 
+        /* Responsive */
+        @media (max-width: 768px) {
+            .logo { font-size: 2rem; }
+            .container { grid-template-columns: 1fr; }
+        }
+        /* --- CSS BİTİŞ --- */
     </style>
 </head>
 <body>
 
     <header>
-        <h1>VORTEX RESELL</h1>
-        <p class="subtitle">Premium Software & Digital Solutions</p>
+        <div class="logo"><i class="fa-solid fa-ghost"></i> NEXUS CHEATS</div>
+        <p class="subtitle">Undetected Solutions for Professional Gamers</p>
+        
+        <div class="filter-container">
+            <button class="filter-btn active" onclick="filterSelection('all')">All Products</button>
+            <button class="filter-btn" onclick="filterSelection('fps')">FPS Games</button>
+            <button class="filter-btn" onclick="filterSelection('moba')">MOBA / RPG</button>
+            <button class="filter-btn" onclick="filterSelection('spoofer')">HWID Spoofer</button>
+        </div>
     </header>
 
-    <div class="tabs-container">
-        <button class="tab-btn active" onclick="filterSelection('all')">Tümü</button>
-        <button class="tab-btn" onclick="filterSelection('fps')">FPS Games</button>
-        <button class="tab-btn" onclick="filterSelection('moba')">MOBA</button>
-        <button class="tab-btn" onclick="filterSelection('spoofer')">Spoofers</button>
-    </div>
-
-    <div class="products-grid">
+    <div class="container">
         
-        <div class="product-card show fps">
-            <div class="image-placeholder">GÖRSEL 1</div>
-            <div class="card-info">
-                <span class="status active">Çalışıyor</span>
-                <div class="card-title">Valorant External</div>
-                <div class="price-row">
-                    <span class="price">₺150</span>
-                    <a href="#" class="buy-btn">Satın Al</a>
+        <div class="card show fps">
+            <img src="https://placehold.co/600x360/1a1a1a/8b5cf6?text=VAL+External" alt="Product" class="card-img">
+            <div class="card-body">
+                <div class="tags">
+                    <span class="tag safe"><i class="fa-solid fa-shield-halved"></i> UNDETECTED</span>
+                    <span class="tag update">V2.1</span>
+                </div>
+                <h3 class="card-title">Valorant Aimbot & ESP</h3>
+                <p class="card-desc">Gelişmiş humanized aimbot ve wallhack özellikleri. Tamamen external ve güvenli.</p>
+                <div class="card-footer">
+                    <span class="price">₺150 / Aylık</span>
+                    <a href="#" class="btn-buy">Satın Al <i class="fa-solid fa-arrow-right"></i></a>
                 </div>
             </div>
         </div>
 
-        <div class="product-card show moba">
-            <div class="image-placeholder">GÖRSEL 2</div>
-            <div class="card-info">
-                <span class="status active">Çalışıyor</span>
-                <div class="card-title">LoL Script Platform</div>
-                <div class="price-row">
-                    <span class="price">₺200</span>
-                    <a href="#" class="buy-btn">Satın Al</a>
+        <div class="card show moba">
+            <img src="https://placehold.co/600x360/1a1a1a/10b981?text=LOL+Script" alt="Product" class="card-img">
+            <div class="card-body">
+                <div class="tags">
+                    <span class="tag safe"><i class="fa-solid fa-check"></i> SAFE</span>
+                </div>
+                <h3 class="card-title">LoL Evade & Orbwalker</h3>
+                <p class="card-desc">Otomatik skill dodgelama ve kusursuz kombo sistemi. Challenger config dahildir.</p>
+                <div class="card-footer">
+                    <span class="price">₺200 / Aylık</span>
+                    <a href="#" class="btn-buy">Satın Al <i class="fa-solid fa-arrow-right"></i></a>
                 </div>
             </div>
         </div>
 
-        <div class="product-card show spoofer">
-            <div class="image-placeholder">GÖRSEL 3</div>
-            <div class="card-info">
-                <span class="status update">Güncelleniyor</span>
-                <div class="card-title">HWID Spoofer Perm</div>
-                <div class="price-row">
-                    <span class="price">₺450</span>
-                    <a href="#" class="buy-btn">Satın Al</a>
+        <div class="card show spoofer">
+            <img src="https://placehold.co/600x360/1a1a1a/ef4444?text=HWID+Spoofer" alt="Product" class="card-img">
+            <div class="card-body">
+                <div class="tags">
+                    <span class="tag safe">PERMANENT</span>
+                </div>
+                <h3 class="card-title">Global HWID Unbanner</h3>
+                <p class="card-desc">Tüm EAC ve BattlEye oyunlarında donanım banını kaldırır. Tek tıkla çalışır.</p>
+                <div class="card-footer">
+                    <span class="price">₺450 / Sınırsız</span>
+                    <a href="#" class="btn-buy">Satın Al <i class="fa-solid fa-arrow-right"></i></a>
                 </div>
             </div>
         </div>
 
-        <div class="product-card show fps">
-            <div class="image-placeholder">GÖRSEL 4</div>
-            <div class="card-info">
-                <span class="status active">Çalışıyor</span>
-                <div class="card-title">CS2 Legit Helper</div>
-                <div class="price-row">
-                    <span class="price">₺120</span>
-                    <a href="#" class="buy-btn">Satın Al</a>
+        <div class="card show fps">
+            <img src="https://placehold.co/600x360/1a1a1a/f59e0b?text=CS2+Legit" alt="Product" class="card-img">
+            <div class="card-body">
+                <div class="tags">
+                    <span class="tag update">NEW</span>
+                </div>
+                <h3 class="card-title">CS2 Prime Legit</h3>
+                <p class="card-desc">Inventory changer ve rank boost için özel tasarlanmış legit hile paketi.</p>
+                <div class="card-footer">
+                    <span class="price">₺120 / Haftalık</span>
+                    <a href="#" class="btn-buy">Satın Al <i class="fa-solid fa-arrow-right"></i></a>
                 </div>
             </div>
         </div>
@@ -248,43 +256,39 @@
     </div>
 
     <script>
-        // Sekme Değiştirme ve Filtreleme Mantığı
+        /* --- JAVASCRIPT BAŞLANGICI --- */
+        
+        // Kategori Filtreleme Fonksiyonu
         function filterSelection(category) {
-            var cards = document.getElementsByClassName("product-card");
-            var btns = document.getElementsByClassName("tab-btn");
+            var cards = document.getElementsByClassName("card");
+            var btns = document.getElementsByClassName("filter-btn");
 
-            // 1. Tüm kartları gez
+            // 1. Kartları Gizle/Göster
             for (var i = 0; i < cards.length; i++) {
-                if (category === "all") {
-                    // "Tümü" seçildiyse hepsini göster
+                // Kartı önce gizle (animasyonun tekrar çalışması için)
+                cards[i].classList.remove("show");
+                
+                // Kısa bir gecikme ile kontrol et (akıcı geçiş için opsiyonel)
+                if (category === "all" || cards[i].classList.contains(category)) {
                     cards[i].classList.add("show");
-                } else {
-                    // Kategori eşleşiyorsa göster, değilse gizle
-                    if (cards[i].classList.contains(category)) {
-                        cards[i].classList.add("show");
-                    } else {
-                        cards[i].classList.remove("show");
-                    }
                 }
             }
-
-            // 2. Butonların aktiflik durumunu güncelle
-            // Tıklanan butonu bulmak için event'i kullanabilirdik ama basit döngü yeterli
-            // (Bu basit örnekte buton stilini manuel sıfırlayıp tıklanana active ekliyoruz)
         }
 
-        // Butonlara tıklayınca aktif sınıfını değiştiren kod bloğu
-        var btnContainer = document.querySelector(".tabs-container");
-        var btns = btnContainer.getElementsByClassName("tab-btn");
+        // Butonların 'Active' Durumunu Ayarlama
+        var btnContainer = document.querySelector(".filter-container");
+        var btns = btnContainer.getElementsByClassName("filter-btn");
 
         for (var i = 0; i < btns.length; i++) {
             btns[i].addEventListener("click", function() {
                 var current = document.getElementsByClassName("active");
-                current[0].className = current[0].className.replace(" active", "");
+                if (current.length > 0) { 
+                    current[0].className = current[0].className.replace(" active", "");
+                }
                 this.className += " active";
             });
         }
+        /* --- JAVASCRIPT BİTİŞ --- */
     </script>
-
 </body>
 </html>
